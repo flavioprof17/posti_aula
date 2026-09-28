@@ -1,0 +1,2120 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#FFFFFF">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Posti in aula">
+<meta name="format-detection" content="telephone=no">
+<title>Posti in aula</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+/* =========================================================
+   Posti in aula — tema "aula al mattino"
+   salvia chiara, legno di betulla, burro, rosa antico, pervinca
+   ========================================================= */
+:root{
+  color-scheme:light;
+  --carta:#FFFFFF;
+  --fondo:#EEF2F0;
+  --fondo-2:#F6F8F7;
+  --quadretto:#CFDAD5;
+  --riga:#E2E8E5;
+  --riga-2:#D2DBD7;
+  --ink:#2D3A40;
+  --ink-2:#5E6C72;
+  --lavagna:#4A7A6B;          /* salvia: colore d'accento */
+  --lavagna-2:#3F6B5D;
+  --salvia-t:#E2EEE9;
+  --salvia-ink:#3B6B5D;
+  --faggio:#F3E7D3;           /* legno di betulla */
+  --faggio-2:#EBDCC3;
+  --faggio-bordo:#E2CFAE;
+  --faggio-ink:#7E6340;
+  --faggio-front:#FCEFC4;
+  --evid:#FFE38A;
+  --evid-t:#FFF6D2;
+  --rosso:#B8434F;            /* rosa antico */
+  --rosso-s:#D9737D;
+  --rosso-t:#FBEAEC;
+  --blu:#4F64B3;              /* pervinca */
+  --blu-s:#7C8FD6;
+  --blu-t:#E9EDFA;
+  --ok:#37705A;
+  --ok-t:#E2F0E8;
+  --ombra:0 1px 2px rgba(45,58,64,.04),0 8px 24px -18px rgba(45,58,64,.22);
+  --ombra-alta:0 2px 4px rgba(45,58,64,.05),0 22px 48px -24px rgba(45,58,64,.35);
+  --r-s:10px;--r-m:14px;--r-l:18px;
+  --seatmin:86px;--aisle:26px;--ecw:50px;--ech:40px;
+  --font:"Atkinson Hyperlegible","Segoe UI",system-ui,-apple-system,Roboto,"Helvetica Neue",Arial,sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box}
+[hidden]{display:none!important}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;font-family:var(--font);font-size:16px;line-height:1.5;color:var(--ink);background:var(--fondo);-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font:inherit;color:inherit}
+h1,h2,h3{line-height:1.2;margin:0;letter-spacing:-.005em}
+h2{font-size:18px}
+h3{font-size:16px}
+p{margin:0}
+.sr{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;border:0;padding:0;margin:-1px}
+:focus-visible{outline:2.5px solid var(--lavagna);outline-offset:2px}
+.muted{color:var(--ink-2)}
+.hint{color:var(--ink-2);font-size:14.5px}
+
+/* ---------- testata ---------- */
+.top{display:flex;align-items:center;gap:14px 20px;flex-wrap:wrap;padding:calc(14px + env(safe-area-inset-top)) max(clamp(14px,3vw,32px),env(safe-area-inset-right)) 10px max(clamp(14px,3vw,32px),env(safe-area-inset-left));background:var(--carta)}
+.brand{display:flex;align-items:center;gap:12px;flex:1 1 auto;min-width:230px}
+.logo{width:36px;height:36px;flex:0 0 auto}
+.brand h1{font-size:21px;white-space:nowrap}
+.classname input{border:1.5px solid transparent;border-radius:999px;padding:4px 14px;font-weight:700;font-size:17px;width:10ch;background:var(--salvia-t);color:var(--salvia-ink);min-height:0}
+.classname input::placeholder{color:var(--salvia-ink);opacity:.6}
+.classname input:hover{border-color:#BFD6CD}
+.classname input:focus{border-color:var(--lavagna);background:var(--carta);outline:none}
+.status{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--ink-2)}
+.status .dot{width:8px;height:8px;border-radius:50%;background:#B3BEBA;flex:0 0 auto}
+.status.ok .dot{background:#7FB49D;box-shadow:0 0 0 3px var(--ok-t)}
+.status.warn .dot{background:#E3B64E;box-shadow:0 0 0 3px #FBF1D6}
+.status.err{color:var(--rosso)}
+.status.err .dot{background:var(--rosso-s);box-shadow:0 0 0 3px var(--rosso-t)}
+.menu{position:relative}
+.menu summary{list-style:none}
+.menu summary::-webkit-details-marker{display:none}
+.menu-list{position:absolute;right:0;top:calc(100% + 8px);z-index:60;background:var(--carta);border:1px solid var(--riga);border-radius:var(--r-m);box-shadow:var(--ombra-alta);padding:6px;min-width:280px;display:flex;flex-direction:column}
+.menu-list button{text-align:left;border:0;background:none;padding:10px 12px;border-radius:var(--r-s);font-weight:700;cursor:pointer}
+.menu-list button:hover{background:var(--fondo-2)}
+.menu-list .danger{color:var(--rosso)}
+.menu-list .danger:hover{background:var(--rosso-t)}
+.tabs{display:flex;gap:4px;padding:4px clamp(10px,3vw,28px) 12px;background:var(--carta);border-bottom:1px solid var(--riga);overflow-x:auto}
+.tabs button{border:0;background:none;padding:8px 14px;border-radius:999px;font-weight:700;font-size:16px;color:var(--ink-2);cursor:pointer;display:flex;gap:8px;align-items:center;white-space:nowrap}
+.tabs button:hover{color:var(--ink);background:var(--fondo-2)}
+.tabs button[aria-selected="true"]{color:var(--salvia-ink);background:var(--salvia-t)}
+.badge{font-size:12.5px;min-width:24px;padding:1px 8px;border-radius:999px;background:var(--fondo);color:var(--ink-2);text-align:center}
+.tabs button[aria-selected="true"] .badge{background:var(--carta);color:var(--salvia-ink)}
+.badge:empty{display:none}
+main{padding:22px clamp(14px,3vw,32px) 40px;max-width:1520px;margin:0 auto}
+.foot{text-align:center;font-size:13px;color:var(--ink-2);padding:0 0 calc(26px + env(safe-area-inset-bottom));letter-spacing:.02em}
+.banner{display:flex;gap:10px 16px;align-items:center;flex-wrap:wrap;max-width:1456px;margin:18px auto 0;padding:12px 16px;border-radius:var(--r-m);background:var(--evid-t);border:1px solid #F2E2A8;font-size:15px}
+.banner p{flex:1 1 360px}
+.bwrap{padding:0 clamp(14px,3vw,32px)}
+
+/* ---------- controlli ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-weight:700;font-size:15px;line-height:1.2;padding:9px 15px;border-radius:var(--r-s);border:1.5px solid var(--riga-2);background:var(--carta);color:var(--ink);cursor:pointer;text-decoration:none;white-space:nowrap;transition:background-color .15s,border-color .15s,box-shadow .15s}
+.btn:hover{background:var(--fondo-2);border-color:#BFCBC6}
+.btn.primary{background:var(--lavagna);border-color:var(--lavagna);color:#fff;box-shadow:0 6px 14px -10px rgba(74,122,107,.9)}
+.btn.primary:hover{background:var(--lavagna-2);border-color:var(--lavagna-2)}
+.btn.danger{border-color:#EBC3C8;color:var(--rosso);background:var(--carta)}
+.btn.danger:hover{background:var(--rosso-t);border-color:var(--rosso-s)}
+.btn.ghost{border-color:transparent;background:transparent;color:var(--salvia-ink)}
+.btn.ghost:hover{background:var(--salvia-t);border-color:transparent}
+.btn.small{padding:6px 12px;font-size:14px;border-radius:9px}
+.btn.big{padding:13px 22px;font-size:17px;border-radius:12px}
+.btn:disabled{opacity:.45;cursor:not-allowed;background:var(--carta);border-color:var(--riga);box-shadow:none}
+.btn svg{width:18px;height:18px;flex:0 0 auto}
+.btn.small svg{width:16px;height:16px}
+.btn[aria-pressed="true"]{background:var(--salvia-t);border-color:#A9CABD;color:var(--salvia-ink)}
+input[type=text],input[type=number],input[type=date],select,textarea{border:1.5px solid var(--riga-2);border-radius:var(--r-s);padding:7px 11px;background:var(--carta);min-height:40px;max-width:100%;transition:border-color .15s,box-shadow .15s}
+input[type=text]:hover,input[type=number]:hover,input[type=date]:hover,select:hover,textarea:hover{border-color:#BFCBC6}
+textarea{width:100%;resize:vertical}
+input:focus,select:focus,textarea:focus{border-color:var(--lavagna);outline:none;box-shadow:0 0 0 4px rgba(74,122,107,.14)}
+select{cursor:pointer}
+.field{display:flex;flex-direction:column;gap:6px}
+.flabel{font-size:14px;font-weight:700;color:var(--ink-2)}
+.seg{display:inline-flex;gap:2px;padding:3px;border-radius:12px;background:var(--fondo);max-width:100%}
+.seg button{border:0;background:none;padding:6px 12px;border-radius:9px;font-weight:700;font-size:14.5px;cursor:pointer;color:var(--ink-2);min-height:34px;transition:background-color .15s,color .15s}
+.seg button:hover{color:var(--ink);background:rgba(255,255,255,.6)}
+.seg button[aria-pressed="true"]{background:var(--carta);color:var(--salvia-ink);box-shadow:0 1px 2px rgba(45,58,64,.08),0 2px 8px -4px rgba(45,58,64,.2)}
+.front-seg .f-any[aria-pressed="true"]{color:var(--ink)}
+.front-seg .f-yes[aria-pressed="true"]{background:var(--evid);color:var(--ink)}
+.front-seg .f-no[aria-pressed="true"]{background:#DDE4EA;color:var(--ink)}
+.stepper{display:inline-flex;align-items:center;gap:2px;padding:3px;border-radius:12px;background:var(--fondo)}
+.stepper button{border:0;background:var(--carta);width:34px;height:32px;border-radius:9px;font-size:19px;font-weight:700;cursor:pointer;color:var(--salvia-ink);box-shadow:0 1px 2px rgba(45,58,64,.07)}
+.stepper button:hover:not(:disabled){background:var(--salvia-t)}
+.stepper button:disabled{opacity:.35;cursor:not-allowed;box-shadow:none}
+.stepper output{min-width:36px;text-align:center;font-weight:700;font-size:16px}
+.panel{background:var(--carta);border:1px solid var(--riga);border-radius:var(--r-l);padding:20px;box-shadow:var(--ombra)}
+.panel>h2,.panel>h3{margin-bottom:12px}
+
+/* ---------- quaderno puntinato e aula ---------- */
+.paper{background-color:var(--carta);background-image:radial-gradient(circle,var(--quadretto) 1.1px,transparent 1.3px);background-size:22px 22px;background-position:11px 11px;border:1px solid var(--riga);border-radius:var(--r-l);box-shadow:var(--ombra)}
+.room{display:flex;flex-direction:column;gap:18px;width:fit-content;min-width:100%;margin:0 auto}
+.room.flip{flex-direction:column-reverse}
+.board{display:flex;justify-content:center}
+.cattedra{width:min(180px,34%);min-width:100px;height:38px;border-radius:12px;background:var(--faggio-2);border:1px solid var(--faggio-bordo);box-shadow:inset 0 -4px 0 rgba(160,125,75,.14),0 6px 14px -12px rgba(120,90,50,.6);display:grid;place-items:center;font-size:13.5px;font-weight:700;letter-spacing:.03em;color:var(--faggio-ink);align-self:center}
+.map{display:grid;gap:9px;justify-content:center;padding:6px}
+.seat{position:relative;display:flex;border-radius:12px;background:var(--faggio);border:1px solid var(--faggio-bordo);box-shadow:inset 0 -4px 0 rgba(160,125,75,.13),0 6px 12px -10px rgba(120,90,50,.55);transition:background-color .15s,box-shadow .15s}
+.seat.front{background:var(--faggio-front);border-color:#EED79A}
+.seat .num{position:absolute;top:6px;left:8px;font-size:11.5px;line-height:1;color:var(--faggio-ink);font-weight:700;pointer-events:none;z-index:1;padding:3px 5px;border-radius:6px;background:rgba(255,255,255,.55)}
+.seat.front .num{background:var(--evid);color:#6A5020}
+.seat .pin{position:absolute;top:6px;right:7px;width:18px;height:18px;border-radius:50%;background:rgba(255,255,255,.7);display:grid;place-items:center;color:var(--salvia-ink);pointer-events:none;z-index:1}
+.seat .pin svg{width:12px;height:12px;display:block}
+.seat.is-empty{background:rgba(243,231,211,.35);border:1.5px dashed #E3D3B8;box-shadow:none}
+.seat.is-empty .num{background:transparent;color:#B09A78}
+.chip{appearance:none;-webkit-appearance:none;border:0;background:transparent;flex:1;min-width:0;display:flex;align-items:center;justify-content:center;padding:22px 8px 12px;cursor:grab;touch-action:manipulation;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;border-radius:inherit;text-align:center;color:var(--ink)}
+.chip:hover{background:rgba(255,255,255,.28)}
+.chip:active{cursor:grabbing}
+.empty{appearance:none;border:0;background:transparent;flex:1;border-radius:inherit;cursor:pointer;min-height:40px}
+.empty:hover{background:rgba(255,255,255,.5)}
+.nm{font-weight:700;font-size:14.5px;line-height:1.35;overflow-wrap:break-word;-webkit-hyphens:auto;hyphens:auto;min-width:0;max-width:100%}
+.nm.m{font-size:13px}
+.nm.s{font-size:12px}
+.nm .tx{padding:0 1px}
+.seat.blue .nm .tx{text-decoration:underline wavy var(--blu-s);text-decoration-thickness:1.5px;text-underline-offset:4px;text-decoration-skip-ink:none}
+.seat.red{background:#FBE9E6;border-color:#EFC3C5}
+.seat.red.front{background:#FCEBD8}
+.seat.red::after{content:"";position:absolute;inset:-6px -7px;border:2px solid var(--rosso-s);border-radius:48% 52% 46% 54%/56% 44% 56% 44%;transform:rotate(-1.4deg);pointer-events:none;z-index:2}
+.seam{position:absolute;z-index:3;min-width:22px;height:22px;padding:0 6px;border-radius:11px;display:grid;place-items:center;font-size:12px;font-weight:700;line-height:1;color:#fff;background:var(--blu-s);border:2px solid var(--carta);box-shadow:0 2px 6px -2px rgba(45,58,64,.35);cursor:help}
+.seam.red{background:var(--rosso-s)}
+.seam.h{right:-16px;top:50%;transform:translateY(-50%)}
+.seam.v{bottom:-16px;left:50%;transform:translateX(-50%)}
+.seat.sel{outline:2.5px dashed var(--lavagna);outline-offset:4px;box-shadow:0 0 0 6px rgba(74,122,107,.08)}
+.seat.drop-over{outline:2.5px solid var(--lavagna);outline-offset:4px;background:#E7F1EC}
+.seat.hl{outline:2.5px solid var(--ink-2);outline-offset:6px}
+.chip.dragging{opacity:.3}
+.chip.pressing{background:rgba(74,122,107,.16);transition:background-color .3s}
+.seat:has(.chip.pressing){transform:scale(.97);transition:transform .3s}
+.drag-ghost{position:fixed;left:0;top:0;z-index:1000;pointer-events:none;background:var(--faggio);border:1px solid var(--faggio-bordo);border-radius:12px;box-shadow:0 20px 36px -14px rgba(45,58,64,.5);padding:10px 15px;font-weight:700;color:var(--ink);rotate:2deg;white-space:nowrap}
+body.is-dragging,body.is-dragging *{cursor:grabbing!important}
+.map.enter .chip{animation:settle .4s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i,0) * 16ms)}
+@keyframes settle{from{opacity:0;transform:translateY(-6px) scale(.98)}to{opacity:1;transform:none}}
+
+/* ---------- vista Posti ---------- */
+.ptool{display:flex;flex-wrap:wrap;align-items:center;gap:10px 12px;margin-bottom:14px}
+.ptool .lastinfo{margin-left:auto;font-size:14.5px;color:var(--ink-2);background:var(--carta);border:1px solid var(--riga);border-radius:999px;padding:6px 14px}
+.htabs{position:relative;display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:16px}
+.htab,.side h3,.ihead{position:relative}
+.htab{display:flex;align-items:stretch;border:1px solid var(--riga);border-radius:12px;background:var(--carta);overflow:hidden;box-shadow:0 1px 2px rgba(45,58,64,.04)}
+.htab.on{border-color:#A9CABD;background:var(--salvia-t);box-shadow:0 0 0 3px rgba(74,122,107,.1)}
+.htab-main{border:0;background:none;padding:8px 10px 8px 14px;font-weight:700;display:flex;gap:8px;align-items:center;cursor:pointer;font-size:15px}
+.htab.on .htab-main{color:var(--salvia-ink)}
+.htab-x{border:0;border-left:1px solid var(--riga);background:none;padding:0 11px;cursor:pointer;color:var(--ink-2);font-size:19px;line-height:1}
+.htab.on .htab-x{border-left-color:#C8DDD4}
+.htab-x:hover{color:var(--rosso);background:var(--rosso-t)}
+.cnt{display:inline-grid;place-items:center;min-width:24px;height:22px;padding:0 7px;border-radius:999px;font-size:12.5px;font-weight:700}
+.cnt.red{background:var(--rosso-t);color:var(--rosso);box-shadow:inset 0 0 0 1px #F1CDD1}
+.cnt.blue{background:var(--blu-t);color:var(--blu);box-shadow:inset 0 0 0 1px #D2DAF4}
+.cnt.ok{background:var(--ok-t);color:var(--ok);box-shadow:inset 0 0 0 1px #C8E2D4}
+.cnt svg{width:14px;height:14px}
+.counts{display:inline-flex;gap:4px}
+.work{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:22px;align-items:start}
+.map-paper{min-width:0;overflow:hidden}
+.maphead{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;padding:16px 20px;background:rgba(255,255,255,.92);border-bottom:1px solid var(--riga)}
+.maphead h2{font-size:20px}
+.maphead .origin{font-size:14px;color:var(--ink-2)}
+.mh-left{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;flex:1 1 auto}
+.mh-acts{display:flex;flex-wrap:wrap;gap:8px}
+.map-wrap{overflow:auto;padding:28px 24px 18px;-webkit-overflow-scrolling:touch}
+.howto{padding:0 24px;font-size:14px;color:var(--ink-2)}
+.scrollhint{display:none;margin:14px 14px -8px;font-size:13.5px;font-weight:700;color:var(--salvia-ink);text-align:center}
+.scrollhint::after{content:"  →";}
+.map-paper.scrolls .scrollhint{display:block}
+.map-paper.scrolls .map-wrap{background:linear-gradient(90deg,#fff 30%,rgba(255,255,255,0)) left center/36px 100% no-repeat local,linear-gradient(270deg,#fff 30%,rgba(255,255,255,0)) right center/36px 100% no-repeat local,radial-gradient(farthest-side at 0 50%,rgba(45,58,64,.16),rgba(45,58,64,0)) left center/12px 100% no-repeat scroll,radial-gradient(farthest-side at 100% 50%,rgba(45,58,64,.16),rgba(45,58,64,0)) right center/12px 100% no-repeat scroll}
+.legend{display:flex;flex-wrap:wrap;gap:8px 20px;margin:12px 0 0;padding:0 24px 20px;list-style:none;font-size:13.5px;color:var(--ink-2)}
+.legend li{display:flex;align-items:center;gap:7px}
+.lg-front{display:inline-block;width:24px;height:14px;border-radius:5px;background:var(--faggio-front);border:1px solid #EED79A}
+.lg-blue{display:inline-block;width:26px;height:10px}
+.lg-pin{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;background:var(--salvia-t)}
+.lg-pin svg{width:12px;height:12px;display:block;color:var(--salvia-ink)}
+.mk{width:22px;height:16px;flex:0 0 auto;display:block}
+.mk-red ellipse{fill:var(--rosso-t);stroke:var(--rosso-s);stroke-width:2}
+.mk-blue path{fill:none;stroke:var(--blu-s);stroke-width:2.2;stroke-linecap:round}
+.side{display:flex;flex-direction:column;gap:16px;position:sticky;top:14px}
+.side h3{display:flex;align-items:center;gap:8px}
+.tray{min-height:64px;display:flex;flex-wrap:wrap;gap:8px;align-content:flex-start;padding:10px;border:1.5px dashed var(--riga-2);border-radius:var(--r-m);background:var(--fondo-2);transition:background-color .15s,border-color .15s}
+.tray.drop-over{border-color:var(--lavagna);background:var(--salvia-t)}
+.tray .chip{flex:0 0 auto;background:var(--faggio);border:1px solid var(--faggio-bordo);border-radius:999px;padding:7px 14px;font-weight:700;font-size:15px;box-shadow:0 4px 10px -8px rgba(120,90,50,.6)}
+.tray .chip.sel{outline:2.5px dashed var(--lavagna);outline-offset:3px}
+.tray-empty{color:var(--ink-2);font-size:14px;margin:auto;pointer-events:none}
+.ihead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
+.depth{display:flex;flex-direction:column;gap:6px;font-size:14px;color:var(--ink-2);font-weight:700;margin-bottom:14px}
+.depth select{font-weight:400;color:var(--ink)}
+.issues ul{list-style:none;margin:0 -6px;padding:0;display:flex;flex-direction:column;gap:2px;max-height:min(58vh,560px);overflow:auto}
+.issue{display:flex;gap:10px;align-items:flex-start;padding:8px 10px;border-radius:var(--r-s);font-size:15px;line-height:1.4;cursor:pointer;transition:background-color .12s}
+.issue.red:hover,.issue.red:focus-visible{background:var(--rosso-t)}
+.issue.blue:hover,.issue.blue:focus-visible{background:var(--blu-t)}
+.issue .mk{margin-top:3px}
+.allok{display:flex;gap:10px;align-items:flex-start;color:var(--ok);font-weight:700;font-size:15px;background:var(--ok-t);border-radius:var(--r-m);padding:12px 14px}
+.allok svg{width:22px;height:22px;flex:0 0 auto}
+.nohyp{padding:56px 24px;text-align:center}
+.nohyp h2{font-size:23px;margin-bottom:10px}
+.nohyp p{max-width:52ch;margin:0 auto 22px;color:var(--ink-2)}
+.nohyp .row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.onboard{max-width:760px}
+.onboard h2{font-size:23px;margin-bottom:16px}
+.steps{margin:0 0 20px;padding:0;list-style:none;counter-reset:st;display:flex;flex-direction:column;gap:14px}
+.steps li{counter-increment:st;display:grid;grid-template-columns:36px 1fr;gap:4px 12px;align-items:start}
+.steps li::before{content:counter(st);width:32px;height:32px;border-radius:50%;background:var(--salvia-t);color:var(--salvia-ink);display:grid;place-items:center;font-weight:700;grid-row:span 2}
+.steps li.done::before{content:"✓";background:var(--lavagna);color:#fff}
+.steps .btn{justify-self:start;margin-top:4px}
+.busy{position:fixed;inset:0;z-index:800;display:grid;place-items:center;background:rgba(238,242,240,.65);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);font-weight:700;font-size:17px}
+.busy span{background:var(--carta);border:1px solid var(--riga);border-radius:var(--r-l);padding:18px 24px;box-shadow:var(--ombra-alta)}
+
+/* ---------- vista Aula ---------- */
+.aula{display:grid;grid-template-columns:360px minmax(0,1fr);gap:22px;align-items:start}
+.aula-side{display:flex;flex-direction:column;gap:16px}
+.ptypes{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
+.ptype{display:flex;flex-direction:column;align-items:center;gap:8px;padding:12px 6px;border:1.5px solid var(--riga);border-radius:var(--r-m);background:var(--carta);cursor:pointer;font-weight:700;font-size:13.5px;text-align:center;line-height:1.2;transition:border-color .15s,background-color .15s}
+.ptype:hover{border-color:#BFCBC6;background:var(--fondo-2)}
+.ptype[aria-pressed="true"]{border-color:#A9CABD;background:var(--salvia-t);color:var(--salvia-ink)}
+.ptype svg{width:48px;height:34px}
+.ptype svg rect{fill:var(--faggio);stroke:var(--faggio-bordo);stroke-width:.8}
+.ptype[aria-pressed="true"] svg rect{fill:var(--carta);stroke:#A9CABD}
+.fields{display:flex;flex-wrap:wrap;gap:14px 18px;margin-bottom:16px}
+.aula-side .panel .seg{margin-bottom:0}
+.aula-side .hint{margin-bottom:14px}
+.aula-side .btn{margin-top:2px}
+.radios{display:flex;flex-direction:column;gap:12px;margin-bottom:6px}
+.radios label{display:flex;gap:10px;align-items:flex-start;cursor:pointer;font-size:15px}
+.radios input{width:18px;height:18px;margin:2px 0 0;accent-color:var(--lavagna);flex:0 0 auto}
+.editor-wrap{padding:22px 24px;min-width:0}
+.editor-scroll{overflow:auto;padding:4px 2px 10px}
+.count{display:inline-block;font-weight:700;margin-bottom:18px;font-size:15.5px;background:var(--salvia-t);color:var(--salvia-ink);padding:6px 14px;border-radius:999px}
+.count.bad{color:var(--rosso);background:var(--rosso-t)}
+.egrid{display:grid;gap:6px;justify-content:center;touch-action:pan-y;user-select:none;-webkit-user-select:none}
+.ecell{border:1.5px dashed #D6DFDB;border-radius:9px;background:rgba(255,255,255,.7);cursor:pointer;padding:0;font-size:12.5px;font-weight:700;color:var(--faggio-ink);transition:background-color .1s,border-color .1s}
+.ecell:hover{border-color:var(--lavagna);background:var(--salvia-t)}
+.ecell.on{background:var(--faggio);border:1px solid var(--faggio-bordo);box-shadow:inset 0 -3px 0 rgba(160,125,75,.14)}
+.ecell.on.front{background:var(--faggio-front);border-color:#EED79A}
+.ecell.on.front span{background:var(--evid);padding:1px 5px;border-radius:5px}
+.editor-wrap .legend{padding:0}
+
+/* ---------- vista Alunni ---------- */
+.alunni{display:flex;flex-direction:column;gap:16px}
+.addrow{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.addrow .grow{flex:1 1 260px;display:flex}
+.addrow .grow input{flex:1;min-height:44px;border-radius:12px}
+.paste{margin-top:16px;display:flex;flex-direction:column;gap:8px}
+.paste .btn{align-self:flex-start}
+.checks{background:var(--rosso-t);border:1px solid #F1CDD1;border-radius:var(--r-l);padding:16px 20px}
+.checks h2{font-size:16px;margin-bottom:10px;color:var(--rosso)}
+.checks ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px}
+.checks li{display:flex;gap:10px;align-items:flex-start;font-size:15px}
+.checks .mk{margin-top:3px}
+.checks .mk-red ellipse{fill:var(--carta)}
+.stu-list{padding:8px 10px 6px}
+.stu-head,.stu-row{display:grid;grid-template-columns:30px minmax(160px,1.15fr) 236px minmax(140px,.75fr) minmax(150px,.9fr) minmax(190px,1.3fr) 40px;gap:10px 12px;align-items:center}
+.stu-head{font-size:13.5px;color:var(--ink-2);font-weight:700;padding:8px 10px}
+.stu-row{padding:10px;border-top:1px solid var(--riga);border-radius:var(--r-s);transition:background-color .12s}
+.stu-row:hover{background:var(--fondo-2)}
+.stu-row .n{color:var(--ink-2);font-size:14px;text-align:right}
+.stu-row .namecell{display:flex}
+.stu-row .name{flex:1;font-weight:700;min-width:0;width:100%}
+.stu-row select{width:100%}
+.stu-row .lbl{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap}
+.mirror{display:block;font-size:12.5px;color:var(--salvia-ink);margin-top:4px}
+.tags{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.tag{display:inline-flex;align-items:center;gap:1px;padding:2px 3px 2px 11px;border-radius:999px;background:var(--rosso-t);border:1px solid #F1CDD1;color:#8F3440;font-size:14px;font-weight:700}
+.tag button{border:0;background:none;width:26px;height:26px;border-radius:50%;cursor:pointer;color:#A55560;font-size:17px;line-height:1}
+.tag button:hover{color:var(--rosso);background:#fff}
+.tags select{min-height:34px;padding:4px 8px;font-size:14px;width:auto;max-width:150px;border-style:dashed}
+.icon-btn{border:0;background:none;width:38px;height:38px;border-radius:var(--r-s);cursor:pointer;color:#8D999E;display:grid;place-items:center}
+.icon-btn:hover{background:var(--rosso-t);color:var(--rosso)}
+.icon-btn svg{width:19px;height:19px}
+.empty-state{text-align:center;padding:44px 20px}
+.empty-state h2{font-size:21px;margin-bottom:10px}
+.empty-state p{color:var(--ink-2);max-width:60ch;margin:0 auto 10px}
+.empty-state .btn{margin-top:10px}
+
+/* ---------- vista Storico ---------- */
+.storico{display:flex;flex-direction:column;gap:16px}
+.rhythm{display:flex;flex-wrap:wrap;gap:12px 28px;align-items:center}
+.rhythm .inline{display:flex;align-items:center;gap:8px;font-weight:700}
+.rhythm input[type=number]{width:72px;text-align:center;font-weight:700;background:var(--salvia-t);border-color:transparent;color:var(--salvia-ink)}
+.rhythm .depth{margin:0}
+#rhythmText{flex:1 1 320px}
+.entries{display:flex;flex-direction:column;gap:10px}
+.entry{background:var(--carta);border:1px solid var(--riga);border-radius:var(--r-l);box-shadow:var(--ombra);overflow:hidden}
+.entry summary{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px;padding:16px 20px;cursor:pointer;list-style:none;transition:background-color .12s}
+.entry summary:hover{background:var(--fondo-2)}
+.entry summary::-webkit-details-marker{display:none}
+.entry summary::before{content:"";width:8px;height:8px;border-right:2px solid var(--ink-2);border-bottom:2px solid var(--ink-2);transform:rotate(-45deg);align-self:center;margin-right:4px;transition:transform .15s}
+.entry[open] summary::before{transform:rotate(45deg)}
+.edate{font-weight:700;font-size:17px}
+.elabel{font-weight:700;font-size:14px;color:var(--salvia-ink);background:var(--salvia-t);padding:2px 10px;border-radius:999px}
+.ecount{color:var(--ink-2);font-size:14px}
+.ebody{padding:0 20px 20px}
+.mini-wrap{overflow:auto;padding:18px;border-radius:var(--r-m);box-shadow:none}
+.enote{margin-top:12px;color:var(--ink-2);font-style:italic}
+.eacts{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.room.mini{gap:10px;min-width:0}
+.room.mini .cattedra{height:22px;font-size:10.5px;border-radius:8px}
+.room.mini .map{gap:5px}
+.room.mini .seat{border-radius:8px;box-shadow:inset 0 -3px 0 rgba(160,125,75,.12)}
+.room.mini .num{font-size:9px;top:3px;left:4px;padding:1px 3px;border-radius:4px}
+.room.mini .nm{font-size:11px;font-weight:700;line-height:1.3;padding:15px 3px 6px;display:block;width:100%;text-align:center}
+.tablewrap{overflow:auto}
+table{border-collapse:collapse;width:100%;font-size:15px}
+th,td{text-align:left;padding:10px 12px;border-top:1px solid var(--riga);vertical-align:top}
+thead th{border-top:0;font-size:13.5px;color:var(--ink-2);background:var(--fondo-2)}
+thead th:first-child{border-radius:var(--r-s) 0 0 var(--r-s)}
+thead th:last-child{border-radius:0 var(--r-s) var(--r-s) 0}
+tbody tr:hover{background:var(--fondo-2)}
+td.num{white-space:nowrap}
+.times{color:var(--blu);font-weight:700;background:var(--blu-t);padding:0 5px;border-radius:5px}
+
+/* ---------- finestre e avvisi ---------- */
+.overlay{position:fixed;inset:0;z-index:900;background:rgba(45,58,64,.32);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);display:grid;place-items:center;padding:16px;animation:fade .15s both}
+.dialog{background:var(--carta);border-radius:22px;max-width:520px;width:100%;padding:26px 26px 20px;box-shadow:0 40px 80px -30px rgba(45,58,64,.55);max-height:calc(100vh - 32px);max-height:calc(100dvh - 32px);overflow:auto;overscroll-behavior:contain;animation:rise .2s cubic-bezier(.2,.8,.2,1) both}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+@keyframes rise{from{opacity:0;transform:translateY(8px) scale(.985)}to{opacity:1;transform:none}}
+.dialog h2{margin:0 0 14px;font-size:20px}
+.dlg-body{display:flex;flex-direction:column;gap:12px;font-size:15.5px}
+.dlg-body .muted{font-size:14.5px}
+.dlg-warn{display:flex;gap:10px;align-items:flex-start;color:var(--rosso);font-weight:700;background:var(--rosso-t);padding:10px 12px;border-radius:var(--r-s)}
+.dlg-actions{display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap;margin-top:22px}
+#toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));transform:translate(-50%,16px);opacity:0;pointer-events:none;z-index:950;background:var(--ink);color:#fff;padding:12px 20px;border-radius:14px;font-weight:700;font-size:15px;box-shadow:0 18px 36px -18px rgba(45,58,64,.7);transition:opacity .2s,transform .2s;max-width:min(560px,calc(100vw - 32px));text-align:center}
+#toast.on{opacity:1;transform:translate(-50%,0)}
+
+/* ---------- schermi stretti ---------- */
+@media (max-width:1180px){
+  .stu-head{display:none}
+  .stu-row{grid-template-columns:26px minmax(0,1fr) minmax(0,1fr) 40px;gap:8px 12px;align-items:end;padding:14px 10px}
+  .stu-row .n{align-self:center}
+  .stu-row .namecell{grid-column:2 / 4}
+  .stu-row .del{grid-column:4;grid-row:1}
+  .stu-row .cell:nth-of-type(1){grid-column:2 / 4}
+  .stu-row .cell:nth-of-type(2){grid-column:2 / 3}
+  .stu-row .cell:nth-of-type(3){grid-column:3 / 4}
+  .stu-row .cell.c-avoid{grid-column:2 / 4}
+  .stu-row .lbl{position:static;width:auto;height:auto;clip:auto;clip-path:none;display:block;font-size:13px;color:var(--ink-2);font-weight:700;margin-bottom:4px;white-space:normal}
+}
+@media (max-width:1080px){
+  .work{grid-template-columns:1fr;gap:16px}
+  .side{position:static}
+  .aula{grid-template-columns:1fr}
+  /* Barra delle schede sempre raggiungibile */
+  .tabs{position:sticky;top:0;z-index:50;padding-top:8px;box-shadow:0 8px 16px -16px rgba(45,58,64,.5)}
+  /* "Senza posto" sopra la piantina, segnalazioni sotto: niente lunghi trascinamenti */
+  .side{display:contents}
+  .work>.map-paper{order:2}
+  .side>.panel:first-child{order:1;padding:14px 16px}
+  .side>.panel:first-child h3{margin:0}
+  .side>.panel:first-child .tray{min-height:52px}
+  .side>.issues{order:3}
+  .issues ul{max-height:none}
+  .aula-side{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+}
+@media (max-width:640px){
+  :root{--seatmin:82px;--aisle:16px;--ecw:36px;--ech:36px}
+  body{font-size:15.5px}
+  .brand{min-width:0;gap:8px}
+  .logo{width:30px;height:30px}
+  .classname input{width:9ch;font-size:15px;padding:3px 10px}
+  .tabs{gap:2px;padding-bottom:10px}
+  .tabs button{padding:7px 11px;font-size:15px}
+  .brand h1{font-size:18px}
+  .top{gap:10px 14px}
+  .status{order:3;flex-basis:100%}
+  main{padding-top:16px}
+  .panel{padding:16px;border-radius:16px}
+  .stu-row{grid-template-columns:22px minmax(0,1fr) 40px}
+  .stu-row .namecell,.stu-row .cell,.stu-row .cell:nth-of-type(1),.stu-row .cell:nth-of-type(2),.stu-row .cell:nth-of-type(3),.stu-row .cell.c-avoid{grid-column:2 / 3}
+  .stu-row .del{grid-column:3}
+  .front-seg{display:flex}
+  .front-seg button{flex:1}
+  .maphead{padding:12px 14px}
+  .map-wrap{padding:22px 12px 12px}
+  .map{gap:7px}
+  .seat{border-radius:10px}
+  .chip{padding:22px 4px 10px}
+  .nm{font-size:12.5px}
+  .nm.m{font-size:12px}
+  .nm.s{font-size:11.5px}
+  .howto,.legend{padding-left:14px;padding-right:14px}
+  .ptool .lastinfo{margin-left:0;flex-basis:100%;border-radius:12px}
+  .ptool{gap:8px}
+  .ptool .btn{flex:1 1 0;padding-left:10px;padding-right:10px;font-size:14.5px}
+  .ptool .btn[data-act="gen"]{flex-basis:100%;font-size:15.5px}
+  .tabs{gap:0;justify-content:space-between;padding-left:10px;padding-right:10px}
+  .tabs button{flex:1 1 auto;justify-content:center;padding:7px 8px;gap:5px}
+  .tabs .badge{min-width:0;padding:1px 6px;font-size:12px}
+  .htabs{flex-wrap:nowrap;overflow-x:auto;margin:0 -14px 14px;padding:3px 14px 6px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .htabs::-webkit-scrollbar{display:none}
+  .htab{flex:0 0 auto}
+  .side>.panel:first-child .tray:has(.tray-empty){min-height:0;padding:8px 12px}
+  .mh-acts{width:100%;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .mh-acts .btn{white-space:normal;text-align:center;line-height:1.2;padding-left:8px;padding-right:8px}
+  .aula-side{grid-template-columns:1fr}
+  .editor-wrap{padding:16px 12px}
+  .egrid{gap:5px}
+  .rhythm{gap:12px}
+  .eacts .btn{flex:1 1 auto}
+  th,td{padding:9px 8px}
+  /* Finestre come fogli che salgono dal basso */
+  .overlay{place-items:end center;padding:0}
+  .dialog{max-width:none;border-radius:22px 22px 0 0;padding:22px 18px calc(18px + env(safe-area-inset-bottom));max-height:92vh;max-height:92dvh}
+  .dlg-actions .btn{flex:1 1 auto}
+  .menu-list{position:fixed;left:12px;right:12px;top:auto;bottom:calc(12px + env(safe-area-inset-bottom));min-width:0;padding:8px}
+  .menu-list button{padding:14px}
+}
+/* Schermi touch: bersagli grandi e niente zoom automatico sui campi */
+@media (pointer:coarse){
+  :root{--ech:40px}
+  input[type=text],input[type=number],input[type=date],select,textarea,.classname input,.tags select{font-size:16px}
+  input[type=text],input[type=number],input[type=date],select{min-height:44px}
+  .btn{min-height:44px}
+  .btn.small{min-height:40px;padding:8px 13px}
+  .seg button{min-height:40px;padding:6px 14px}
+  .stepper button{width:44px;height:40px}
+  .icon-btn{width:44px;height:44px}
+  .tag button{width:34px;height:34px}
+  .tags select{min-height:40px}
+  .htab-main{min-height:44px;padding-left:15px}
+  .htab-x{min-width:44px}
+  .tabs button{min-height:42px}
+  .ptype{min-height:88px}
+  .radios label{min-height:32px;align-items:center}
+  .radios input{margin-top:0;width:22px;height:22px}
+  .issue{padding:11px 10px}
+  .entry summary{min-height:56px;align-items:center}
+  .menu summary{min-height:44px}
+}
+/* Senza mouse gli effetti "al passaggio" resterebbero accesi dopo il tocco */
+@media (hover:none){
+  .chip:hover,.empty:hover{background:transparent}
+  .ecell:hover{border-color:#D6DFDB;background:rgba(255,255,255,.7)}
+  .ecell.on:hover{background:var(--faggio);border-color:var(--faggio-bordo)}
+  .ecell.on.front:hover{background:var(--faggio-front);border-color:#EED79A}
+  .stu-row:hover,tbody tr:hover,.entry summary:hover{background:transparent}
+  .issue.red:hover,.issue.blue:hover{background:transparent}
+}
+@media (max-width:420px){
+  #bdg-aula{display:none}
+  .brand h1{font-size:16px}
+  .brand{gap:6px}
+  .logo{width:28px;height:28px}
+  .classname input{width:9.5ch;padding:3px 8px}
+  .menu summary.btn{padding:8px 12px}
+  .ptool .btn:not([data-act="gen"]) svg{display:none}
+  .ptool .btn:not([data-act="gen"]){font-size:14px;padding-left:6px;padding-right:6px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+}
+
+/* ---------- stampa ---------- */
+#print-root{display:none}
+@media print{
+  @page{size:A4 landscape;margin:10mm}
+  html,body{background:#fff!important}
+  #app,#modal-root,#toast,.busy{display:none!important}
+  #print-root{display:block}
+  .sheet-head{display:flex;align-items:baseline;gap:14px;margin-bottom:6mm}
+  .sheet-head h1{font-size:22pt}
+  .sheet-head p{font-size:12pt}
+  .room.print{width:100%;min-width:0;gap:5mm}
+  .room.print .map{gap:2.4mm;justify-content:stretch;padding:0}
+  .room.print .seat{background:#fff;border:1.3px solid #222;border-radius:3mm;box-shadow:none;align-items:center;justify-content:center;break-inside:avoid}
+  .room.print .seat.is-empty{border-style:dashed;border-color:#999}
+  .room.print .num{color:#666;font-size:8pt;background:none}
+  .room.print .nm{text-transform:uppercase;font-size:12pt;overflow-wrap:normal;hyphens:manual;letter-spacing:.02em;padding:4mm 1.5mm 2.5mm;display:block;text-align:center;width:100%}
+  .room.print .nm.m{font-size:10.5pt}
+  .room.print .nm.s{font-size:9.5pt}
+  .room.print .cattedra{background:#fff;border:1.3px solid #222;border-radius:3mm;box-shadow:none;color:#000;height:9mm;font-size:10pt;font-weight:400}
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <header class="top">
+    <div class="brand">
+      <svg class="logo" viewBox="0 0 36 36" aria-hidden="true"><rect width="36" height="36" rx="11" fill="#E2EEE9"/><rect x="12" y="6.5" width="12" height="5" rx="2.5" fill="#E2CFAE"/><rect x="6" y="15" width="10.5" height="6.5" rx="2.4" fill="#FFE38A"/><rect x="19.5" y="15" width="10.5" height="6.5" rx="2.4" fill="#FFE38A"/><rect x="6" y="24.5" width="10.5" height="6.5" rx="2.4" fill="#F3E7D3" stroke="#E2CFAE" stroke-width=".8"/><rect x="19.5" y="24.5" width="10.5" height="6.5" rx="2.4" fill="#F3E7D3" stroke="#E2CFAE" stroke-width=".8"/></svg>
+      <h1>Posti in aula</h1>
+      <label class="classname"><span class="sr">Nome della classe</span><input id="className" type="text" maxlength="24" placeholder="Classe" autocomplete="off"></label>
+    </div>
+    <div class="status" id="status" aria-live="polite"></div>
+    <details class="menu" id="dataMenu">
+      <summary class="btn">Dati</summary>
+      <div class="menu-list">
+        <button type="button" data-act="export">Esporta un backup (.json)</button>
+        <button type="button" data-act="import">Importa un backup</button>
+        <button type="button" data-act="show-text">Mostra i dati come testo</button>
+        <button type="button" data-act="demo">Prova con una classe di esempio</button>
+        <button type="button" data-act="reset" class="danger">Cancella tutti i dati</button>
+      </div>
+    </details>
+    <input type="file" id="importFile" accept=".json,application/json,text/plain" hidden>
+  </header>
+  <nav class="tabs" role="tablist" aria-label="Sezioni">
+    <button type="button" role="tab" id="tab-aula" data-tab="aula" aria-controls="view-aula">Aula <span class="badge" id="bdg-aula"></span></button>
+    <button type="button" role="tab" id="tab-alunni" data-tab="alunni" aria-controls="view-alunni">Alunni <span class="badge" id="bdg-alunni"></span></button>
+    <button type="button" role="tab" id="tab-posti" data-tab="posti" aria-controls="view-posti">Posti</button>
+    <button type="button" role="tab" id="tab-storico" data-tab="storico" aria-controls="view-storico">Storico <span class="badge" id="bdg-storico"></span></button>
+  </nav>
+  <div class="bwrap" id="banner"></div>
+  <main>
+    <section class="view" id="view-aula" data-view="aula" role="tabpanel" aria-labelledby="tab-aula" hidden></section>
+    <section class="view" id="view-alunni" data-view="alunni" role="tabpanel" aria-labelledby="tab-alunni" hidden></section>
+    <section class="view" id="view-posti" data-view="posti" role="tabpanel" aria-labelledby="tab-posti" hidden><p class="muted">Caricamento…</p></section>
+    <section class="view" id="view-storico" data-view="storico" role="tabpanel" aria-labelledby="tab-storico" hidden></section>
+  </main>
+  <footer class="foot">Prof. Flavio</footer>
+</div>
+<div id="modal-root"></div>
+<div id="toast" role="status" aria-live="polite"></div>
+<div id="print-root"></div>
+<script>
+'use strict';
+/* =========================================================
+   Posti in aula — logica di base
+   ========================================================= */
+
+/* ---------- utilità ---------- */
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+const ESC = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
+const esc = v => String(v == null ? '' : v).replace(/[&<>"']/g, c => ESC[c]);
+const cssq = s => (window.CSS && CSS.escape) ? CSS.escape(s) : String(s).replace(/["\\]/g, '\\$&');
+const uid = () => Math.random().toString(36).slice(2, 8) + Date.now().toString(36).slice(-4);
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const pairKey = (a, b) => (a < b ? a + '|' + b : b + '|' + a);
+const cellKey = (r, c) => r + ',' + c;
+const parseKey = k => k.split(',').map(Number);
+const plural = (n, one, many) => n + ' ' + (n === 1 ? one : many);
+const clone = o => JSON.parse(JSON.stringify(o));
+const byName = (a, b) => a.name.localeCompare(b.name, 'it', { sensitivity: 'base' });
+const MESI = ['gen', 'feb', 'mar', 'apr', 'mag', 'giu', 'lug', 'ago', 'set', 'ott', 'nov', 'dic'];
+const MESI_L = ['gennaio', 'febbraio', 'marzo', 'aprile', 'maggio', 'giugno', 'luglio', 'agosto', 'settembre', 'ottobre', 'novembre', 'dicembre'];
+const GIORNI = ['domenica', 'lunedì', 'martedì', 'mercoledì', 'giovedì', 'venerdì', 'sabato'];
+const isoOf = d => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+const todayISO = () => isoOf(new Date());
+const dateOf = iso => { const [y, m, d] = iso.split('-').map(Number); return new Date(y, m - 1, d); };
+const fmtShort = iso => { const d = dateOf(iso); return d.getDate() + ' ' + MESI[d.getMonth()] + (d.getFullYear() !== new Date().getFullYear() ? ' ' + d.getFullYear() : ''); };
+const fmtLong = iso => { const d = dateOf(iso); return d.getDate() + ' ' + MESI_L[d.getMonth()] + ' ' + d.getFullYear(); };
+const fmtDay = iso => { const d = dateOf(iso); return GIORNI[d.getDay()] + ' ' + d.getDate() + ' ' + MESI_L[d.getMonth()]; };
+const artDay = iso => ([1, 8, 11].includes(dateOf(iso).getDate()) ? "l'" : 'il ');
+const addDays = (iso, n) => { const d = dateOf(iso); d.setDate(d.getDate() + n); return isoOf(d); };
+const daysBetween = (a, b) => Math.round((dateOf(b) - dateOf(a)) / 86400000);
+const hhmm = d => String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+function debounce(fn, ms) { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); }; }
+function shuffle(a) { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); const x = a[i]; a[i] = a[j]; a[j] = x; } return a; }
+const sizeCls = n => { const l = String(n).length; return l <= 20 ? '' : l <= 28 ? 'm' : 's'; };
+
+/* ---------- stato ---------- */
+const APP_KEY = 'posti-in-aula:v1';
+const MAXR = 14, MAXC = 20, MAXSTU = 45;
+const DEFAULT_SETTINGS = { periodWeeks: 4, depth: 0, flip: false };
+
+function emptyState() {
+  return {
+    app: 'posti-in-aula', version: 1, className: '',
+    layout: presetLayout({ type: 'file', rows: 4, groups: 3, size: 2 }),
+    students: [], history: [], hyps: [],
+    settings: Object.assign({}, DEFAULT_SETTINGS), updatedAt: null
+  };
+}
+let S = emptyState();
+const UI = {
+  loaded: false, tab: 'posti', activeHyp: null, sel: null, tool: 'seat', undo: [],
+  storage: 'loading', dirty: false, saveError: false, savedAt: null,
+  showPaste: false, bannerOff: false, suppressClick: false, animate: false, modal: null,
+  openEntries: null, hl: '',
+  preset: { type: 'file', rows: 4, groups: 3, size: 2, iRows: 2, iCols: 3, iSize: 4, sides: 6, base: 8 }
+};
+
+function normLayout(l) {
+  if (!l || typeof l !== 'object') return null;
+  const rows = clamp(parseInt(l.rows, 10) || 1, 1, MAXR), cols = clamp(parseInt(l.cols, 10) || 1, 1, MAXC);
+  const seats = {};
+  if (l.seats && typeof l.seats === 'object') {
+    for (const k of Object.keys(l.seats)) {
+      const m = /^(\d+),(\d+)$/.exec(k); if (!m) continue;
+      if (+m[1] < rows && +m[2] < cols) seats[k] = { f: !!(l.seats[k] && l.seats[k].f) };
+    }
+  }
+  return { rows, cols, seats, adj: l.adj === 'hv' ? 'hv' : 'h' };
+}
+function normPrefs(p) {
+  p = p && typeof p === 'object' ? p : {};
+  return {
+    seat: typeof p.seat === 'string' && /^\d+,\d+$/.test(p.seat) ? p.seat : null,
+    front: p.front === 'yes' || p.front === 'no' ? p.front : 'any',
+    mate: typeof p.mate === 'string' && p.mate ? p.mate : null,
+    avoid: Array.isArray(p.avoid) ? p.avoid.map(String) : []
+  };
+}
+function normEntry(e) {
+  if (!e || typeof e !== 'object') return null;
+  const layout = normLayout(e.layout); if (!layout) return null;
+  const assign = {}, used = new Set();
+  if (e.assign && typeof e.assign === 'object') {
+    for (const k of Object.keys(e.assign)) {
+      const v = e.assign[k];
+      if (layout.seats[k] && typeof v === 'string' && !used.has(v)) { assign[k] = v; used.add(v); }
+    }
+  }
+  const names = {};
+  if (e.names && typeof e.names === 'object') for (const id of Object.keys(e.names)) names[id] = String(e.names[id]).slice(0, 60);
+  return {
+    id: e.id ? String(e.id) : uid(),
+    date: typeof e.date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(e.date) ? e.date : todayISO(),
+    label: String(e.label || '').slice(0, 60), note: String(e.note || '').slice(0, 400),
+    layout, assign, names
+  };
+}
+function normHyp(h) {
+  if (!h || typeof h !== 'object') return null;
+  const assign = {};
+  if (h.assign && typeof h.assign === 'object') for (const k of Object.keys(h.assign)) if (typeof h.assign[k] === 'string') assign[k] = h.assign[k];
+  return { id: h.id ? String(h.id) : uid(), name: String(h.name || '?').slice(0, 3), assign, origin: String(h.origin || '').slice(0, 60), edited: !!h.edited };
+}
+function pruneHyps(st) {
+  const ids = new Set(st.students.map(s => s.id));
+  for (const h of st.hyps) {
+    const seen = new Set();
+    for (const k of Object.keys(h.assign)) {
+      const sid = h.assign[k];
+      if (!st.layout.seats[k] || !ids.has(sid) || seen.has(sid)) delete h.assign[k]; else seen.add(sid);
+    }
+  }
+}
+function normalize(raw) {
+  const out = emptyState();
+  if (!raw || typeof raw !== 'object') return out;
+  out.className = typeof raw.className === 'string' ? raw.className.slice(0, 24) : '';
+  out.layout = normLayout(raw.layout) || out.layout;
+  const ids = new Set();
+  out.students = (Array.isArray(raw.students) ? raw.students : [])
+    .filter(s => s && s.id != null && typeof s.name === 'string')
+    .map(s => ({ id: String(s.id), name: s.name.trim().slice(0, 60) || 'Senza nome', prefs: normPrefs(s.prefs) }))
+    .filter(s => (ids.has(s.id) ? false : (ids.add(s.id), true)))
+    .slice(0, MAXSTU);
+  for (const s of out.students) {
+    if (s.prefs.mate && (!ids.has(s.prefs.mate) || s.prefs.mate === s.id)) s.prefs.mate = null;
+    s.prefs.avoid = Array.from(new Set(s.prefs.avoid.filter(x => ids.has(x) && x !== s.id)));
+  }
+  for (const s of out.students) for (const x of s.prefs.avoid) {
+    const o = out.students.find(t => t.id === x);
+    if (o && !o.prefs.avoid.includes(s.id)) o.prefs.avoid.push(s.id);
+  }
+  out.history = (Array.isArray(raw.history) ? raw.history : []).map(normEntry).filter(Boolean);
+  out.hyps = (Array.isArray(raw.hyps) ? raw.hyps : []).map(normHyp).filter(Boolean);
+  const st = raw.settings && typeof raw.settings === 'object' ? raw.settings : {};
+  out.settings = {
+    periodWeeks: clamp(parseInt(st.periodWeeks, 10) || 4, 1, 20),
+    depth: clamp(parseInt(st.depth, 10) || 0, 0, 50),
+    flip: !!st.flip
+  };
+  pruneHyps(out);
+  return out;
+}
+
+/* ---------- salvataggio ----------
+   Dentro Claude: memoria dell'artefatto (window.storage).
+   File scaricato e aperto nel browser: memoria del browser (localStorage).
+   Se nessuna delle due è disponibile: solo backup .json. */
+function browserStore() {
+  try {
+    const ls = window['local' + 'Storage'];
+    const probe = APP_KEY + ':prova';
+    ls.setItem(probe, '1'); ls.removeItem(probe);
+    return ls;
+  } catch (e) { return null; }
+}
+const Store = {
+  ls: null,
+  async load() {
+    const st = window.storage;
+    if (st && typeof st.get === 'function' && typeof st.set === 'function') {
+      UI.storage = 'cloud';
+      try {
+        const res = await st.get(APP_KEY, false);
+        if (res && typeof res.value === 'string') return JSON.parse(res.value);
+      } catch (e) { /* nessun dato salvato finora */ }
+      return null;
+    }
+    this.ls = browserStore();
+    if (this.ls) {
+      UI.storage = 'local';
+      try { const v = this.ls.getItem(APP_KEY); return v ? JSON.parse(v) : null; } catch (e) { return null; }
+    }
+    UI.storage = 'file';
+    return null;
+  },
+  async save() {
+    clearTimeout(this.t); this.t = null;
+    if (UI.storage === 'cloud') {
+      try {
+        const r = await window.storage.set(APP_KEY, JSON.stringify(S), false);
+        if (!r) throw new Error('salvataggio non riuscito');
+        UI.saveError = false; UI.savedAt = new Date();
+      } catch (e) { UI.saveError = true; }
+      renderStatus();
+    } else if (UI.storage === 'local') {
+      try {
+        this.ls.setItem(APP_KEY, JSON.stringify(S));
+        UI.saveError = false; UI.savedAt = new Date(); UI.dirty = false;
+      } catch (e) { UI.saveError = true; UI.dirty = true; }
+      renderStatus();
+    }
+  },
+  schedule() { clearTimeout(this.t); this.t = setTimeout(() => this.save(), 450); },
+  pending() { return !!this.t; }
+};
+const saveSoon = () => Store.schedule();
+function touch() {
+  S.updatedAt = new Date().toISOString();
+  if (UI.storage !== 'cloud') UI.dirty = true;
+  saveSoon(); renderStatus();
+}
+function commit() { touch(); render(); }
+
+/* ---------- aula ---------- */
+function seatKeys(L) {
+  return Object.keys(L.seats).sort((a, b) => { const x = parseKey(a), y = parseKey(b); return x[0] - y[0] || x[1] - y[1]; });
+}
+function seatNumbers(L) { const m = {}; seatKeys(L).forEach((k, i) => { m[k] = i + 1; }); return m; }
+function frontKeys(L) { return Object.keys(L.seats).filter(k => L.seats[k].f); }
+function neighborPairs(L) {
+  const out = [];
+  for (const k of Object.keys(L.seats)) {
+    const [r, c] = parseKey(k);
+    const right = cellKey(r, c + 1);
+    if (L.seats[right]) out.push([k, right, 'h']);
+    if (L.adj === 'hv') { const down = cellKey(r + 1, c); if (L.seats[down]) out.push([k, down, 'v']); }
+  }
+  return out;
+}
+function autoFront(L) {
+  const ks = Object.keys(L.seats); if (!ks.length) return;
+  const minR = Math.min(...ks.map(k => parseKey(k)[0]));
+  for (const k of ks) L.seats[k].f = parseKey(k)[0] === minR;
+}
+const maxGroups = size => Math.floor((MAXC + 1) / (size + 1));
+const maxIsleCols = iSize => Math.floor((MAXC + 1) / ((iSize === 6 ? 3 : 2) + 1));
+function fixPreset(p) {
+  p.rows = clamp(p.rows, 1, 12); p.size = clamp(p.size, 1, 4); p.groups = clamp(p.groups, 1, maxGroups(p.size));
+  p.iSize = p.iSize === 6 ? 6 : 4; p.iRows = clamp(p.iRows, 1, 4); p.iCols = clamp(p.iCols, 1, maxIsleCols(p.iSize));
+  p.sides = clamp(p.sides, 2, 10); p.base = clamp(p.base, 3, 14);
+  return p;
+}
+function presetLayout(p) {
+  const seats = {}; let rows, cols, adj = 'h';
+  if (p.type === 'isole') {
+    const h = 2, w = p.iSize === 6 ? 3 : 2;
+    rows = p.iRows * (h + 1) - 1; cols = p.iCols * (w + 1) - 1; adj = 'hv';
+    for (let a = 0; a < p.iRows; a++) for (let b = 0; b < p.iCols; b++)
+      for (let dr = 0; dr < h; dr++) for (let dc = 0; dc < w; dc++) seats[cellKey(a * (h + 1) + dr, b * (w + 1) + dc)] = { f: false };
+  } else if (p.type === 'ferro') {
+    rows = p.sides; cols = p.base; adj = 'hv';
+    for (let r = 0; r < rows; r++) { seats[cellKey(r, 0)] = { f: false }; seats[cellKey(r, cols - 1)] = { f: false }; }
+    for (let c = 0; c < cols; c++) seats[cellKey(rows - 1, c)] = { f: false };
+  } else {
+    const size = p.size, groups = p.groups;
+    rows = p.rows; cols = groups * size + (groups - 1);
+    for (let r = 0; r < rows; r++) for (let g = 0; g < groups; g++) for (let i = 0; i < size; i++) seats[cellKey(r, g * (size + 1) + i)] = { f: false };
+  }
+  const L = { rows: clamp(rows, 1, MAXR), cols: clamp(cols, 1, MAXC), seats, adj };
+  autoFront(L);
+  return L;
+}
+function afterLayout() { pruneHyps(S); UI.sel = null; UI.undo = []; }
+
+/* ---------- alunni ---------- */
+const stu = id => S.students.find(s => s.id === id) || null;
+function nameOf(id) {
+  const s = stu(id); if (s) return s.name;
+  for (let i = S.history.length - 1; i >= 0; i--) { const n = S.history[i].names && S.history[i].names[id]; if (n) return n; }
+  return 'Alunno eliminato';
+}
+function setMate(s, mid) {
+  const old = s.prefs.mate;
+  if (old === mid) return;
+  if (old) { const o = stu(old); if (o && o.prefs.mate === s.id) o.prefs.mate = null; }
+  s.prefs.mate = mid;
+  if (mid) { const m = stu(mid); if (m && !m.prefs.mate) m.prefs.mate = s.id; }
+}
+function addAvoid(aId, bId) {
+  const a = stu(aId), b = stu(bId); if (!a || !b || a === b) return;
+  if (!a.prefs.avoid.includes(bId)) a.prefs.avoid.push(bId);
+  if (!b.prefs.avoid.includes(aId)) b.prefs.avoid.push(aId);
+}
+function removeAvoid(aId, bId) {
+  const a = stu(aId), b = stu(bId);
+  if (a) a.prefs.avoid = a.prefs.avoid.filter(x => x !== bId);
+  if (b) b.prefs.avoid = b.prefs.avoid.filter(x => x !== aId);
+}
+function addStudents(names) {
+  let added = 0;
+  for (const raw of names) {
+    const n = raw.replace(/\s+/g, ' ').trim().slice(0, 60);
+    if (!n) continue;
+    if (S.students.length >= MAXSTU) { toast('Si possono inserire al massimo ' + MAXSTU + ' alunni.'); break; }
+    S.students.push({ id: uid(), name: n, prefs: normPrefs(null) });
+    added++;
+  }
+  return added;
+}
+function deleteStudent(id) {
+  S.students = S.students.filter(s => s.id !== id);
+  for (const s of S.students) {
+    if (s.prefs.mate === id) s.prefs.mate = null;
+    s.prefs.avoid = s.prefs.avoid.filter(x => x !== id);
+  }
+  pruneHyps(S); UI.sel = null; UI.undo = [];
+}
+
+/* ---------- storico e analisi ---------- */
+function sortedHistory() { return S.history.slice().sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : 0)); }
+/* Due disposizioni hanno "la stessa aula" se condividono quasi tutti i banchi:
+   aggiungere o togliere un banco non conta, passare dalle file alle isole sì. */
+function sameRoom(a, b) {
+  const ka = Object.keys(a.seats), kb = Object.keys(b.seats);
+  if (!ka.length || !kb.length) return false;
+  let common = 0; for (const k of ka) if (b.seats[k]) common++;
+  return common / (ka.length + kb.length - common) >= 0.8;
+}
+function histIndex() {
+  const all = sortedHistory(), d = S.settings.depth;
+  const used = d > 0 ? all.slice(-d) : all;
+  const pairs = new Map(), front = new Map(), seat = new Map();
+  used.forEach((e, i) => {
+    const room = sameRoom(e.layout, S.layout);
+    const rec = { id: e.id, date: e.date, label: e.label, age: used.length - 1 - i };
+    for (const [k1, k2] of neighborPairs(e.layout)) {
+      const a = e.assign[k1], b = e.assign[k2]; if (!a || !b) continue;
+      const pk = pairKey(a, b); if (!pairs.has(pk)) pairs.set(pk, []); pairs.get(pk).push(rec);
+    }
+    for (const k of Object.keys(e.assign)) {
+      const a = e.assign[k];
+      if (e.layout.seats[k] && e.layout.seats[k].f) { if (!front.has(a)) front.set(a, []); front.get(a).push(rec); }
+      if (room && S.layout.seats[k]) { const sk = a + '@' + k; if (!seat.has(sk)) seat.set(sk, []); seat.get(sk).push(rec); }
+    }
+  });
+  return { pairs, front, seat, last: used[used.length - 1] || null, used };
+}
+function whenTxt(list) {
+  if (list.length === 1) return artDay(list[0].date) + fmtShort(list[0].date);
+  return list.length + ' volte (' + list.map(x => fmtShort(x.date)).join(', ') + ')';
+}
+function analyze(assign) {
+  const L = S.layout, nums = seatNumbers(L), H = histIndex();
+  const where = {}; for (const k of Object.keys(assign)) where[assign[k]] = k;
+  const issues = [], red = new Set(), blue = new Set(), seams = new Map();
+  const pairs = neighborPairs(L), nb = new Set(pairs.map(([a, b]) => pairKey(a, b)));
+  const isNb = (k1, k2) => !!k1 && !!k2 && nb.has(pairKey(k1, k2));
+  const matePair = (a, b) => { const A = stu(a), B = stu(b); return !!((A && A.prefs.mate === b) || (B && B.prefs.mate === a)); };
+  const avoidPair = (a, b) => { const A = stu(a), B = stu(b); return !!((A && A.prefs.avoid.includes(b)) || (B && B.prefs.avoid.includes(a))); };
+  const add = (sev, text, seats) => issues.push({ sev, text, seats: seats.filter(Boolean) });
+
+  const unassigned = S.students.filter(s => !where[s.id]);
+  if (unassigned.length === 1) add('red', unassigned[0].name + ' è senza posto.', []);
+  else if (unassigned.length > 1) add('red', unassigned.length + ' alunni sono senza posto: ' + unassigned.map(s => s.name).join(', ') + '.', []);
+
+  for (const s of S.students) {
+    const k = where[s.id], p = s.prefs;
+    if (p.seat) {
+      if (!L.seats[p.seat]) add('red', s.name + ": il posto fisso non esiste più nell'aula.", [k]);
+      else if (k !== p.seat) { add('red', s.name + ': il suo posto fisso è il banco ' + nums[p.seat] + '.', [k, p.seat]); if (k) red.add(k); }
+    }
+    if (k && p.front === 'yes' && !L.seats[k].f) { add('red', s.name + ': deve stare in prima fila.', [k]); red.add(k); }
+    if (k && p.front === 'no' && L.seats[k].f) { add('red', s.name + ': non deve stare in prima fila.', [k]); red.add(k); }
+  }
+  const seenMate = new Set();
+  for (const s of S.students) {
+    const m = s.prefs.mate; if (!m || !stu(m)) continue;
+    const pk = pairKey(s.id, m); if (seenMate.has(pk)) continue; seenMate.add(pk);
+    const k1 = where[s.id], k2 = where[m];
+    if (!isNb(k1, k2)) { add('red', s.name + ' e ' + nameOf(m) + ': da mettere vicini.', [k1, k2]); if (k1) red.add(k1); if (k2) red.add(k2); }
+  }
+  for (const [k1, k2] of pairs) {
+    const a = assign[k1], b = assign[k2]; if (!a || !b) continue;
+    const sk = pairKey(k1, k2);
+    if (avoidPair(a, b)) {
+      add('red', nameOf(a) + ' e ' + nameOf(b) + ': sono vicini, ma vanno separati.', [k1, k2]);
+      red.add(k1); red.add(k2); seams.set(sk, { sev: 'red', label: '!', text: 'Da separare' });
+      continue;
+    }
+    if (matePair(a, b)) continue;
+    const h = H.pairs.get(pairKey(a, b));
+    if (h) {
+      add('blue', nameOf(a) + ' e ' + nameOf(b) + ': già vicini ' + whenTxt(h) + '.', [k1, k2]);
+      blue.add(k1); blue.add(k2); seams.set(sk, { sev: 'blue', label: String(h.length), text: 'Già vicini ' + whenTxt(h) });
+    }
+  }
+  // Prima fila: segnala solo se c'è chi potrebbe andarci e ci è stato meno volte.
+  const frontCnt = id => (H.front.get(id) || []).length;
+  const waiting = S.students.filter(t => t.prefs.front === 'any' && !t.prefs.seat && !(where[t.id] && L.seats[where[t.id]].f));
+  for (const k of Object.keys(assign)) {
+    if (!L.seats[k] || !L.seats[k].f) continue;
+    const s = stu(assign[k]); if (!s || s.prefs.front === 'yes' || s.prefs.seat === k) continue;
+    const h = H.front.get(s.id); if (!h) continue;
+    const fewer = waiting.filter(t => frontCnt(t.id) < h.length);
+    if (!fewer.length) continue;
+    const who = fewer.length === 1 ? fewer[0].name + ' ci è stato' : fewer.length + ' compagni ci sono stati';
+    add('blue', s.name + ': già in prima fila ' + whenTxt(h) + ', mentre ' + who + ' meno volte.', [k]); blue.add(k);
+  }
+  // Stesso banco: segnala solo se l'alunno ha ancora banchi in cui è stato meno volte.
+  const seatKs = Object.keys(L.seats);
+  for (const k of Object.keys(assign)) {
+    const s = stu(assign[k]); if (!s || s.prefs.seat === k) continue;
+    const h = H.seat.get(s.id + '@' + k); if (!h) continue;
+    const allowed = seatKs.filter(k2 => s.prefs.front === 'yes' ? L.seats[k2].f : s.prefs.front === 'no' ? !L.seats[k2].f : true);
+    if (!allowed.some(k2 => (H.seat.get(s.id + '@' + k2) || []).length < h.length)) continue;
+    add('blue', s.name + ': già a questo banco (banco ' + nums[k] + ') ' + whenTxt(h) + ', anche se con un compagno diverso.', [k]); blue.add(k);
+  }
+  const nRed = issues.filter(i => i.sev === 'red').length;
+  issues.sort((x, y) => (x.sev === y.sev ? 0 : x.sev === 'red' ? -1 : 1));
+  return { issues, red, blue, seams, unassigned, nRed, nBlue: issues.length - nRed };
+}
+function prefChecks() {
+  const L = S.layout, st = S.students, nums = seatNumbers(L), out = [];
+  const nSeats = Object.keys(L.seats).length, nFront = frontKeys(L).length;
+  if (st.length > nSeats) out.push('Gli alunni sono ' + st.length + ' ma i banchi ' + nSeats + ': aggiungine ' + (st.length - nSeats) + ' nella scheda Aula.');
+  const yes = st.filter(s => s.prefs.front === 'yes').length, no = st.filter(s => s.prefs.front === 'no').length;
+  if (yes > nFront) out.push(yes + ' alunni devono stare in prima fila, ma la prima fila ha ' + plural(nFront, 'banco', 'banchi') + '.');
+  if (no > nSeats - nFront) out.push(no + ' alunni non devono stare in prima fila, ma fuori dalla prima fila ci sono solo ' + (nSeats - nFront) + ' banchi.');
+  const bySeat = {};
+  for (const s of st) {
+    const p = s.prefs;
+    if (p.seat) {
+      if (!L.seats[p.seat]) out.push(s.name + ': il posto fisso non esiste più. Sceglilo di nuovo.');
+      else {
+        (bySeat[p.seat] = bySeat[p.seat] || []).push(s.name);
+        if (p.front === 'yes' && !L.seats[p.seat].f) out.push(s.name + ': il posto fisso non è in prima fila.');
+        if (p.front === 'no' && L.seats[p.seat].f) out.push(s.name + ': il posto fisso è in prima fila.');
+      }
+    }
+    if (p.mate && p.avoid.includes(p.mate)) out.push(s.name + ': ' + nameOf(p.mate) + ' è sia tra i compagni da avere accanto sia tra quelli da tenere lontani.');
+  }
+  for (const k of Object.keys(bySeat)) if (bySeat[k].length > 1) out.push('Banco ' + nums[k] + ': è il posto fisso di ' + bySeat[k].join(' e ') + '.');
+  const seen = {};
+  for (const s of st) { const n = s.name.toLowerCase(); seen[n] = (seen[n] || 0) + 1; }
+  for (const n of Object.keys(seen)) if (seen[n] > 1) out.push('Ci sono ' + seen[n] + ' alunni con lo stesso nome (' + st.find(s => s.name.toLowerCase() === n).name + '): aggiungi il cognome per distinguerli.');
+  return out;
+}
+
+/* ---------- generatore di ipotesi ---------- */
+const W = { fixed: 1000, front: 400, avoid: 700, mate: 350, out: 3000, pairRep: 40, frontRep: 25, seatRep: 18, divPair: 10, divSeat: 2, emptyFront: 150, emptyBack: 3 };
+
+function buildProblem() {
+  const L = S.layout, st = S.students;
+  const seats = seatKeys(L), NS = seats.length, N = st.length, slots = Math.max(NS, N);
+  const sIdx = new Map(seats.map((k, i) => [k, i])), id2i = new Map(st.map((s, i) => [s.id, i]));
+  const front = new Uint8Array(slots); seats.forEach((k, i) => { front[i] = L.seats[k].f ? 1 : 0; });
+  const maxRow = seats.length ? Math.max(...seats.map(k => parseKey(k)[0])) : 0;
+  const emptyCost = new Float64Array(slots);
+  seats.forEach((k, i) => { emptyCost[i] = (front[i] ? W.emptyFront : 0) + W.emptyBack * (maxRow - parseKey(k)[0]); });
+  const edges = [], adjM = new Uint8Array(slots * slots);
+  for (const [k1, k2] of neighborPairs(L)) { const i = sIdx.get(k1), j = sIdx.get(k2); edges.push(i, j); adjM[i * slots + j] = adjM[j * slots + i] = 1; }
+  const H = histIndex();
+  const decay = list => list.reduce((s, x) => s + Math.pow(0.75, x.age), 0) + (list.length - 1) * 0.5;
+  const pairW = new Float64Array(N * N), frontW = new Float64Array(N), seatW = new Float64Array(N * slots);
+  for (const [pk, list] of H.pairs) {
+    const [a, b] = pk.split('|'), ia = id2i.get(a), ib = id2i.get(b);
+    if (ia === undefined || ib === undefined) continue;
+    pairW[ia * N + ib] = pairW[ib * N + ia] = decay(list);
+  }
+  const recent = list => list.reduce((s, x) => s + Math.pow(0.75, x.age), 0);
+  for (const [a, list] of H.front) { const ia = id2i.get(a); if (ia !== undefined) frontW[ia] = list.length + 0.3 * recent(list); }
+  for (const [sk, list] of H.seat) {
+    const at = sk.indexOf('@'), ia = id2i.get(sk.slice(0, at)), si = sIdx.get(sk.slice(at + 1));
+    if (ia !== undefined && si !== undefined) seatW[ia * slots + si] = list.length + 0.3 * recent(list);
+  }
+  const avoidM = new Uint8Array(N * N), mateM = new Uint8Array(N * N), mates = [], seenM = new Set();
+  const fixed = new Int32Array(N).fill(-1), fpref = new Int8Array(N);
+  st.forEach((s, i) => {
+    if (s.prefs.seat && sIdx.has(s.prefs.seat)) fixed[i] = sIdx.get(s.prefs.seat);
+    fpref[i] = s.prefs.front === 'yes' ? 1 : s.prefs.front === 'no' ? -1 : 0;
+    for (const x of s.prefs.avoid) { const j = id2i.get(x); if (j !== undefined) avoidM[i * N + j] = avoidM[j * N + i] = 1; }
+    if (s.prefs.mate) {
+      const j = id2i.get(s.prefs.mate);
+      if (j !== undefined && j !== i) {
+        mateM[i * N + j] = mateM[j * N + i] = 1;
+        const pk = pairKey(s.id, s.prefs.mate); if (!seenM.has(pk)) { seenM.add(pk); mates.push(i, j); }
+      }
+    }
+  });
+  return { seats, NS, N, slots, front, emptyCost, edges, adjM, pairW, frontW, seatW, avoidM, mateM, mates, fixed, fpref, st };
+}
+function makeCost(P, div) {
+  const { NS, N, slots, front, emptyCost, edges, adjM, pairW, frontW, seatW, avoidM, mateM, mates, fixed, fpref } = P;
+  return function cost(pos, where) {
+    let c = 0;
+    if (NS > N) for (let s = 0; s < NS; s++) if (pos[s] < 0) c += emptyCost[s];
+    for (let i = 0; i < N; i++) {
+      const s = where[i];
+      if (s >= NS) { c += W.out; if (fixed[i] >= 0) c += W.fixed; if (fpref[i] === 1) c += W.front; continue; }
+      if (fixed[i] >= 0 && s !== fixed[i]) c += W.fixed;
+      if (fpref[i] === 1) { if (!front[s]) c += W.front; }
+      else if (front[s]) { if (fpref[i] === -1) c += W.front; if (s !== fixed[i]) c += W.frontRep * frontW[i]; }
+      if (s !== fixed[i]) c += W.seatRep * seatW[i * slots + s];
+      if (div) c += W.divSeat * div.seat[i * slots + s];
+    }
+    for (let e = 0; e < edges.length; e += 2) {
+      const a = pos[edges[e]], b = pos[edges[e + 1]];
+      if (a < 0 || b < 0) continue;
+      const ab = a * N + b;
+      if (avoidM[ab]) c += W.avoid;
+      else if (!mateM[ab]) { c += W.pairRep * pairW[ab]; if (div) c += W.divPair * div.pair[ab]; }
+    }
+    for (let m = 0; m < mates.length; m += 2) {
+      const sa = where[mates[m]], sb = where[mates[m + 1]];
+      if (sa >= NS || sb >= NS || !adjM[sa * slots + sb]) c += W.mate;
+    }
+    return c;
+  };
+}
+function anneal(P, cost, iters) {
+  const { NS, N, slots, fixed } = P;
+  const pos = new Int32Array(slots).fill(-1), where = new Int32Array(N), locked = new Uint8Array(slots);
+  const placed = new Uint8Array(N), order = shuffle(Array.from({ length: N }, (_, i) => i));
+  for (const i of order) {
+    const f = fixed[i];
+    if (f >= 0 && pos[f] < 0) { pos[f] = i; where[i] = f; placed[i] = 1; locked[f] = 1; }
+  }
+  const free = shuffle(Array.from({ length: NS }, (_, s) => s).filter(s => pos[s] < 0));
+  for (let s = NS; s < slots; s++) free.push(s);
+  for (const i of order) if (!placed[i]) { const s = free.shift(); pos[s] = i; where[i] = s; }
+  const movable = []; for (let s = 0; s < slots; s++) if (!locked[s]) movable.push(s);
+  const M = movable.length;
+  let cur = cost(pos, where), best = cur;
+  const bestPos = pos.slice(), bestWhere = where.slice();
+  if (M < 2) return { pos: bestPos, where: bestWhere, cost: best };
+  const T0 = 80, T1 = 0.4;
+  for (let it = 0; it < iters; it++) {
+    const u = movable[(Math.random() * M) | 0], v = movable[(Math.random() * M) | 0];
+    if (u === v || (u >= NS && v >= NS)) continue;
+    const a = pos[u], b = pos[v]; if (a < 0 && b < 0) continue;
+    pos[u] = b; pos[v] = a; if (a >= 0) where[a] = v; if (b >= 0) where[b] = u;
+    const nc = cost(pos, where), d = nc - cur;
+    const T = T0 * Math.pow(T1 / T0, it / iters);
+    if (d <= 0 || Math.random() < Math.exp(-d / T)) {
+      cur = nc;
+      if (cur < best) { best = cur; bestPos.set(pos); bestWhere.set(where); }
+    } else { pos[u] = a; pos[v] = b; if (a >= 0) where[a] = u; if (b >= 0) where[b] = v; }
+  }
+  return { pos: bestPos, where: bestWhere, cost: best };
+}
+function generateAssignments(K) {
+  const P = buildProblem();
+  if (!P.N || !P.NS) return [];
+  const trueCost = makeCost(P, null);
+  const div = { seat: new Uint16Array(P.N * P.slots), pair: new Uint16Array(P.N * P.N) };
+  const iters = clamp(3000 + 900 * P.N, 8000, 40000);
+  const results = [];
+  for (let h = 0; h < K; h++) {
+    const cost = h === 0 ? trueCost : makeCost(P, div);
+    let best = null;
+    for (let r = 0; r < 3; r++) { const res = anneal(P, cost, iters); if (!best || res.cost < best.cost) best = res; }
+    results.push({ pos: best.pos, cost: trueCost(best.pos, best.where) });
+    for (let i = 0; i < P.N; i++) div.seat[i * P.slots + best.where[i]]++;
+    for (let e = 0; e < P.edges.length; e += 2) {
+      const a = best.pos[P.edges[e]], b = best.pos[P.edges[e + 1]];
+      if (a >= 0 && b >= 0) { div.pair[a * P.N + b]++; div.pair[b * P.N + a]++; }
+    }
+  }
+  results.sort((x, y) => x.cost - y.cost);
+  return results.map(res => {
+    const assign = {};
+    for (let s = 0; s < P.NS; s++) { const i = res.pos[s]; if (i >= 0) assign[P.seats[s]] = P.st[i].id; }
+    return assign;
+  });
+}
+/* =========================================================
+   Rendering
+   ========================================================= */
+const svgS = d => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + d + '</svg>';
+const I = {
+  pin: '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M8.5 2.5h7l-1.2 6 3.2 3.3V14H13v6.5L12 22l-1-1.5V14H6.5v-2.2l3.2-3.3z"/></svg>',
+  trash: svgS('<path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/>'),
+  undo: svgS('<path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/>'),
+  print: svgS('<path d="M6 9V3h12v6"/><rect x="3" y="9" width="18" height="8" rx="2"/><path d="M6 14h12v7H6z"/>'),
+  shuffle: svgS('<path d="M16 3h5v5M4 20 21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/>'),
+  rotate: svgS('<path d="M20 12a8 8 0 1 1-2.6-5.9L20 8.5"/><path d="M20 3.5v5h-5"/>'),
+  save: svgS('<path d="M5 3h11l3 3v15H5z"/><path d="M8 3v5h7V3M8 21v-7h8v7"/>'),
+  plus: svgS('<path d="M12 5v14M5 12h14"/>'),
+  check: svgS('<path d="m5 12.5 4.5 4.5L19 7"/>')
+};
+const MK_RED = '<svg class="mk mk-red" viewBox="0 0 22 16" aria-hidden="true"><ellipse cx="11" cy="8" rx="9" ry="5.8" transform="rotate(-7 11 8)"/></svg>';
+const MK_BLUE = '<svg class="mk mk-blue" viewBox="0 0 22 16" aria-hidden="true"><path d="M2 10c2.4-4.5 4.3 4.5 6.7 0s4.3 4.5 6.6 0 3.2 3 4.7 1"/></svg>';
+const rectsSVG = rs => '<svg viewBox="0 0 48 34" aria-hidden="true">' + rs.map(([x, y]) => `<rect x="${x}" y="${y}" width="5" height="5" rx="1"/>`).join('') + '</svg>';
+const ICON_FILE = rectsSVG([].concat(...[0, 1, 2].map(r => [0, 1, 2].map(g => [[3 + g * 15, 4 + r * 10], [9 + g * 15, 4 + r * 10]]).flat())));
+const ICON_ISOLE = rectsSVG([].concat(...[0, 1].map(a => [0, 1, 2].map(b => { const x = 3 + b * 15, y = 4 + a * 15; return [[x, y], [x + 6, y], [x, y + 6], [x + 6, y + 6]]; }).flat())));
+const ICON_FERRO = rectsSVG([0, 1, 2, 3, 4].map(i => [4, 3 + i * 6]).concat([0, 1, 2, 3, 4].map(i => [39, 3 + i * 6])).concat([1, 2, 3, 4].map(i => [4 + i * 7, 27])));
+
+function render() {
+  if (!UI.loaded) return;
+  const active = document.activeElement;
+  const fid = active && active.dataset ? active.dataset.fid : null;
+  renderHeader();
+  renderBanner();
+  $$('.view').forEach(el => { el.hidden = el.dataset.view !== UI.tab; });
+  if (UI.tab === 'aula') renderAula();
+  else if (UI.tab === 'alunni') renderAlunni();
+  else if (UI.tab === 'storico') renderStorico();
+  else renderPosti();
+  renderStatus();
+  if (fid) {
+    const el = document.querySelector('[data-fid="' + cssq(fid) + '"]');
+    if (el && !el.disabled && el !== document.activeElement) el.focus({ preventScroll: true });
+  }
+}
+function renderHeader() {
+  const cn = $('#className');
+  if (document.activeElement !== cn) cn.value = S.className;
+  document.title = (S.className ? S.className + ' – ' : '') + 'Posti in aula';
+  $$('.tabs [data-tab]').forEach(b => b.setAttribute('aria-selected', String(b.dataset.tab === UI.tab)));
+  $('#bdg-aula').textContent = Object.keys(S.layout.seats).length;
+  $('#bdg-alunni').textContent = S.students.length || '';
+  $('#bdg-storico').textContent = S.history.length || '';
+}
+function renderStatus() {
+  const el = $('#status'); if (!el) return;
+  let cls = '', txt = '', btn = '';
+  const exp = '<button type="button" class="btn small" data-act="export">Esporta</button>';
+  if (UI.storage === 'loading') txt = 'Caricamento…';
+  else if (UI.storage === 'cloud') {
+    if (UI.saveError) { cls = 'err'; txt = 'Salvataggio non riuscito: esporta un backup'; btn = exp; }
+    else { cls = 'ok'; txt = UI.savedAt ? 'Salvato alle ' + hhmm(UI.savedAt) : 'Salvataggio automatico attivo'; }
+  } else if (UI.storage === 'local') {
+    if (UI.saveError) { cls = 'err'; txt = 'Il browser non ha salvato: esporta un backup'; btn = exp; }
+    else { cls = 'ok'; txt = UI.savedAt ? 'Salvato nel browser alle ' + hhmm(UI.savedAt) : 'Salvataggio automatico nel browser'; }
+  } else if (UI.dirty) { cls = 'warn'; txt = 'Modifiche non ancora esportate'; btn = exp; }
+  else txt = 'I dati si conservano con i backup';
+  el.className = 'status ' + cls;
+  el.innerHTML = '<span class="dot" aria-hidden="true"></span><span>' + esc(txt) + '</span>' + btn;
+}
+function renderBanner() {
+  const b = $('#banner');
+  if (UI.storage !== 'file' || UI.bannerOff) { b.innerHTML = ''; return; }
+  b.innerHTML = `<div class="banner"><p>Questo browser non permette di salvare i dati del file, per esempio in navigazione privata: le modifiche restano finché la pagina è aperta. Prima di chiuderla esporta un backup, e la volta dopo importalo dal menu Dati.</p>
+    <button type="button" class="btn small" data-act="import">Importa un backup</button>
+    <button type="button" class="btn small ghost" data-act="banner-off">Ho capito</button></div>`;
+}
+
+/* ---------- mappa dell'aula (condivisa) ---------- */
+function roomHTML(L, assign, o) {
+  const mode = o.mode, flip = !!o.flip;
+  const nameFn = o.nameFn || nameOf;
+  const nums = seatNumbers(L), occR = new Set(), occC = new Set();
+  for (const k of Object.keys(L.seats)) { const [r, c] = parseKey(k); occR.add(r); occC.add(c); }
+  const rows = Array.from({ length: L.rows }, (_, i) => i), cols = Array.from({ length: L.cols }, (_, i) => i);
+  if (flip) { rows.reverse(); cols.reverse(); }
+  const D = {
+    edit: { col: 'minmax(var(--seatmin),136px)', ac: 'var(--aisle)', row: 'minmax(68px,auto)', ar: '18px' },
+    mini: { col: 'minmax(50px,78px)', ac: '12px', row: 'minmax(36px,auto)', ar: '10px' },
+    print: { col: 'minmax(0,1fr)', ac: '0.3fr', row: 'minmax(16mm,auto)', ar: '5mm' }
+  }[mode];
+  const tc = cols.map(c => (occC.has(c) ? D.col : D.ac)).join(' ');
+  const tr = rows.map(r => (occR.has(r) ? D.row : D.ar)).join(' ');
+  const marks = o.marks, edit = mode === 'edit';
+  let cells = '', idx = 0;
+  rows.forEach((r, ri) => cols.forEach((c, ci) => {
+    const k = cellKey(r, c), seat = L.seats[k]; if (!seat) return;
+    const sid = assign[k];
+    const cls = ['seat'];
+    if (seat.f && mode !== 'print') cls.push('front');
+    if (!sid) cls.push('is-empty');
+    if (marks) { if (marks.red.has(k)) cls.push('red'); if (marks.blue.has(k)) cls.push('blue'); }
+    if (edit && UI.sel && sid && UI.sel.sid === sid) cls.push('sel');
+    let inner = '<span class="num">' + nums[k] + '</span>';
+    if (sid) {
+      const name = nameFn(sid);
+      if (o.pinned && o.pinned.has(sid)) inner += '<span class="pin" title="Posto fisso">' + I.pin + '</span>';
+      const nm = '<span class="nm ' + sizeCls(name) + '"><span class="tx">' + esc(name) + '</span></span>';
+      if (edit) inner += `<button type="button" class="chip" style="--i:${idx++}" data-sid="${esc(sid)}" data-fid="chip-${esc(sid)}" aria-label="${esc(name)}, banco ${nums[k]}${seat.f ? ', prima fila' : ''}">${nm}</button>`;
+      else inner += nm;
+    } else if (edit) inner += `<button type="button" class="empty" data-empty="${k}" data-fid="empty-${k}" aria-label="Banco ${nums[k]} libero"></button>`;
+    if (marks && marks.seams.size) {
+      const right = flip ? cellKey(r, c - 1) : cellKey(r, c + 1);
+      const below = flip ? cellKey(r - 1, c) : cellKey(r + 1, c);
+      const sh = marks.seams.get(pairKey(k, right)), sv = marks.seams.get(pairKey(k, below));
+      if (sh) inner += `<span class="seam h ${sh.sev}" title="${esc(sh.text)}">${esc(sh.label)}</span>`;
+      if (sv) inner += `<span class="seam v ${sv.sev}" title="${esc(sv.text)}">${esc(sv.label)}</span>`;
+    }
+    cells += `<div class="${cls.join(' ')}" data-k="${k}"${edit ? ' data-drop="seat:' + k + '"' : ''} style="grid-row:${ri + 1};grid-column:${ci + 1}">${inner}</div>`;
+  }));
+  const board = `<div class="board"><div class="cattedra">Cattedra</div></div>`;
+  return `<div class="room ${mode}${flip ? ' flip' : ''}">${board}<div class="map${o.animate ? ' enter' : ''}" style="grid-template-columns:${tc};grid-template-rows:${tr}">${cells}</div></div>`;
+}
+function legendHTML() {
+  return `<ul class="legend">
+    <li>${MK_RED}Preferenza non rispettata</li>
+    <li>${MK_BLUE}Già successo in una disposizione precedente</li>
+    <li><span class="lg-front" aria-hidden="true"></span>Prima fila</li>
+    <li><span class="lg-pin" aria-hidden="true">${I.pin}</span>Posto fisso</li>
+  </ul>`;
+}
+function countsHTML(a) {
+  if (!a.nRed && !a.nBlue) return '<span class="counts"><span class="cnt ok" title="Nessuna segnalazione">' + I.check + '<span class="sr">Nessuna segnalazione</span></span></span>';
+  let h = '<span class="counts">';
+  if (a.nRed) h += `<span class="cnt red" title="${plural(a.nRed, 'segnalazione rossa', 'segnalazioni rosse')}">${a.nRed}<span class="sr"> in rosso</span></span>`;
+  if (a.nBlue) h += `<span class="cnt blue" title="${plural(a.nBlue, 'segnalazione blu', 'segnalazioni blu')}">${a.nBlue}<span class="sr"> in blu</span></span>`;
+  return h + '</span>';
+}
+function depthSelectHTML() {
+  const n = S.history.length, d = Math.min(S.settings.depth, n);
+  let opts = `<option value="0" ${d === 0 ? 'selected' : ''}>tutto lo storico</option>`;
+  if (n > 1) {
+    opts += `<option value="1" ${d === 1 ? 'selected' : ''}>solo l'ultima disposizione</option>`;
+    for (let i = 2; i < Math.min(n, 11); i++) opts += `<option value="${i}" ${d === i ? 'selected' : ''}>le ultime ${i} disposizioni</option>`;
+  }
+  return `<label class="depth">Controlla le ripetizioni su<select data-field="depth" data-fid="depth">${opts}</select></label>`;
+}
+
+/* ---------- vista Aula ---------- */
+function stepperHTML(label, key, val, min, max, act) {
+  return `<div class="field"><span class="flabel" id="lb-${act}-${key}">${label}</span><div class="stepper" role="group" aria-labelledby="lb-${act}-${key}">
+    <button type="button" data-act="${act}" data-k="${key}" data-d="-1" data-fid="${act}-${key}-m" ${val <= min ? 'disabled' : ''} aria-label="Diminuisci">−</button>
+    <output>${val}</output>
+    <button type="button" data-act="${act}" data-k="${key}" data-d="1" data-fid="${act}-${key}-p" ${val >= max ? 'disabled' : ''} aria-label="Aumenta">+</button></div></div>`;
+}
+function segHTML(label, key, val, opts, act) {
+  return `<div class="field"><span class="flabel">${label}</span><div class="seg" role="group" aria-label="${label}">` +
+    opts.map(([v, t]) => `<button type="button" data-act="${act}" data-k="${key}" data-v="${v}" data-fid="${act}-${key}-${v}" aria-pressed="${String(val) === String(v)}">${t}</button>`).join('') + '</div></div>';
+}
+function countLineHTML() {
+  const nSeats = Object.keys(S.layout.seats).length, nFront = frontKeys(S.layout).length, nStu = S.students.length;
+  if (!nSeats) return '<p class="count bad">L\'aula è vuota: scegli un modello o tocca i quadretti per disegnare i banchi.</p>';
+  let t = plural(nSeats, 'banco', 'banchi') + ', ' + nFront + ' in prima fila.';
+  let bad = false;
+  if (nStu) {
+    const free = nSeats - nStu;
+    if (free < 0) { bad = true; t += ' ' + (free === -1 ? 'Manca 1 banco' : 'Mancano ' + (-free) + ' banchi') + ': gli alunni sono ' + nStu + '.'; }
+    else if (free === 0) t += ' Un banco per ogni alunno.';
+    else t += ' ' + (free === 1 ? 'Resta 1 banco libero.' : 'Restano ' + free + ' banchi liberi.');
+  }
+  return `<p class="count${bad ? ' bad' : ''}">${t}</p>`;
+}
+function editorHTML() {
+  const L = S.layout, nums = seatNumbers(L);
+  let cells = '';
+  for (let r = 0; r < L.rows; r++) for (let c = 0; c < L.cols; c++) {
+    const k = cellKey(r, c), seat = L.seats[k];
+    const label = seat ? 'Banco ' + nums[k] + (seat.f ? ', prima fila' : '') : 'Spazio vuoto, riga ' + (r + 1) + ', colonna ' + (c + 1);
+    cells += `<button type="button" class="ecell${seat ? ' on' : ''}${seat && seat.f ? ' front' : ''}" data-cell="${k}" data-fid="cell-${k}" aria-label="${label}">${seat ? '<span>' + nums[k] + '</span>' : ''}</button>`;
+  }
+  return `${countLineHTML()}<div class="editor-scroll"><div class="room edit-room"><div class="board"><div class="cattedra">Cattedra</div></div>
+    <div class="egrid" id="egrid" style="grid-template-columns:repeat(${L.cols},var(--ecw));grid-template-rows:repeat(${L.rows},var(--ech))">${cells}</div></div></div>`;
+}
+function renderAula() {
+  const L = S.layout, p = fixPreset(UI.preset);
+  const typeBtn = (v, label, icon) => `<button type="button" class="ptype" data-act="ptype" data-v="${v}" data-fid="ptype-${v}" aria-pressed="${p.type === v}">${icon}<span>${label}</span></button>`;
+  let params;
+  if (p.type === 'isole') params = stepperHTML('Righe di isole', 'iRows', p.iRows, 1, 4, 'pstep') + stepperHTML('Isole per riga', 'iCols', p.iCols, 1, maxIsleCols(p.iSize), 'pstep') + segHTML('Banchi per isola', 'iSize', p.iSize, [[4, '4'], [6, '6']], 'pset');
+  else if (p.type === 'ferro') params = stepperHTML('Banchi per lato', 'sides', p.sides, 2, 10, 'pstep') + stepperHTML('Banchi sul fondo', 'base', p.base, 3, 14, 'pstep');
+  else params = stepperHTML('File', 'rows', p.rows, 1, 12, 'pstep') + stepperHTML('Gruppi per fila', 'groups', p.groups, 1, maxGroups(p.size), 'pstep') + segHTML('Banchi uniti', 'size', p.size, [[1, '1'], [2, '2'], [3, '3'], [4, '4']], 'pset');
+  const count = Object.keys(presetLayout(p).seats).length, nStu = S.students.length;
+  $('#view-aula').innerHTML = `<div class="aula">
+    <div class="aula-side">
+      <section class="panel">
+        <h2>Parti da un modello</h2>
+        <div class="ptypes">${typeBtn('file', 'File di banchi', ICON_FILE)}${typeBtn('isole', 'Isole', ICON_ISOLE)}${typeBtn('ferro', 'Ferro di cavallo', ICON_FERRO)}</div>
+        <div class="fields">${params}</div>
+        <p class="hint">Con questo modello i banchi sono <strong>${count}</strong>${nStu ? ' per ' + plural(nStu, 'alunno', 'alunni') : ''}.</p>
+        <button type="button" class="btn primary" data-act="apply-preset">Usa questo modello</button>
+      </section>
+      <section class="panel">
+        <h2>Ritocca a mano</h2>
+        <p class="hint">Tocca un quadretto per aggiungere o togliere un banco; trascina per disegnarne più di uno. Con lo strumento “Prima fila” scegli quali banchi contano come prima fila.</p>
+        <div class="fields">${segHTML('Strumento', 'tool', UI.tool, [['seat', 'Banchi'], ['front', 'Prima fila']], 'tool')}</div>
+        <div class="fields">${stepperHTML('Righe', 'rows', L.rows, 1, MAXR, 'gstep')}${stepperHTML('Colonne', 'cols', L.cols, 1, MAXC, 'gstep')}</div>
+        <button type="button" class="btn" data-act="auto-front">Prima fila automatica</button>
+      </section>
+      <section class="panel">
+        <h2>Chi conta come vicino</h2>
+        <div class="radios" role="radiogroup" aria-label="Chi conta come vicino">
+          <label><input type="radio" name="adj" value="h" ${L.adj === 'h' ? 'checked' : ''}><span>Solo chi siede a destra o a sinistra</span></label>
+          <label><input type="radio" name="adj" value="hv" ${L.adj === 'hv' ? 'checked' : ''}><span>Anche chi siede davanti o dietro <span class="muted">(isole, ferro di cavallo)</span></span></label>
+        </div>
+      </section>
+    </div>
+    <section class="paper editor-wrap">
+      <div id="editorBox">${editorHTML()}</div>
+      <ul class="legend"><li><span class="lg-front" aria-hidden="true"></span>Prima fila</li><li>Il numero è quello del banco, usato anche per i posti fissi.</li></ul>
+    </section>
+  </div>`;
+}
+function refreshEditor() { const b = $('#editorBox'); if (b) b.innerHTML = editorHTML(); renderHeader(); }
+
+/* ---------- vista Alunni ---------- */
+function seatOptions(s) {
+  const L = S.layout, nums = seatNumbers(L), taken = {};
+  for (const o of S.students) if (o.id !== s.id && o.prefs.seat) taken[o.prefs.seat] = o.name;
+  let h = '<option value="">Nessuno</option>';
+  if (s.prefs.seat && !L.seats[s.prefs.seat]) h += `<option value="${s.prefs.seat}" selected>Banco non più presente</option>`;
+  for (const k of seatKeys(L)) h += `<option value="${k}" ${s.prefs.seat === k ? 'selected' : ''}>Banco ${nums[k]}${L.seats[k].f ? ' (prima fila)' : ''}${taken[k] ? ', già di ' + esc(taken[k]) : ''}</option>`;
+  return h;
+}
+function stuRowHTML(s, i) {
+  const id = esc(s.id), others = S.students.filter(o => o.id !== s.id).sort(byName);
+  const mateOpts = '<option value="">Nessuno</option>' + others.map(o => `<option value="${esc(o.id)}" ${s.prefs.mate === o.id ? 'selected' : ''}>${esc(o.name)}</option>`).join('');
+  const tags = s.prefs.avoid.map(stu).filter(Boolean).map(o => `<span class="tag" data-o="${esc(o.id)}"><span class="tname">${esc(o.name)}</span><button type="button" data-act="unavoid" data-sid="${id}" data-o="${esc(o.id)}" aria-label="Togli ${esc(o.name)}">×</button></span>`).join('');
+  const avoidable = others.filter(o => !s.prefs.avoid.includes(o.id));
+  const mirror = !s.prefs.mate ? S.students.filter(o => o.prefs.mate === s.id).map(o => o.name) : [];
+  const fronts = [['any', 'Indifferente'], ['yes', 'Sì'], ['no', 'No']];
+  return `<div class="stu-row" data-sid="${id}">
+    <span class="n">${i + 1}</span>
+    <label class="namecell"><span class="sr">Nome</span><input class="name" type="text" value="${esc(s.name)}" maxlength="60" data-sid="${id}" data-fid="name-${id}" autocomplete="off"></label>
+    <div class="cell"><span class="lbl">Prima fila</span><div class="seg front-seg" role="group" aria-label="Prima fila per ${esc(s.name)}">${fronts.map(([v, t]) => `<button type="button" class="f-${v}" data-act="front" data-sid="${id}" data-v="${v}" data-fid="front-${id}-${v}" aria-pressed="${s.prefs.front === v}">${t}</button>`).join('')}</div></div>
+    <div class="cell"><label><span class="lbl">Posto fisso</span><select data-field="seat" data-sid="${id}" data-fid="seat-${id}">${seatOptions(s)}</select></label></div>
+    <div class="cell"><label><span class="lbl">Accanto a</span><select data-field="mate" data-sid="${id}" data-fid="mate-${id}">${mateOpts}</select></label>${mirror.length ? `<span class="mirror">Richiesto da ${esc(mirror.join(', '))}</span>` : ''}</div>
+    <div class="cell c-avoid"><span class="lbl">Non accanto a</span><div class="tags">${tags}${avoidable.length ? `<select data-field="avoid" data-sid="${id}" data-fid="avoid-${id}" aria-label="Aggiungi un compagno da tenere lontano da ${esc(s.name)}"><option value="">Aggiungi…</option>${avoidable.map(o => `<option value="${esc(o.id)}">${esc(o.name)}</option>`).join('')}</select>` : ''}</div></div>
+    <button type="button" class="icon-btn del" data-act="del-student" data-sid="${id}" aria-label="Elimina ${esc(s.name)}" title="Elimina">${I.trash}</button>
+  </div>`;
+}
+function renderAlunni() {
+  const checks = prefChecks(), n = S.students.length;
+  $('#view-alunni').innerHTML = `<div class="alunni">
+    <section class="panel">
+      <div class="addrow">
+        <label class="grow"><span class="sr">Nome del nuovo alunno</span><input id="newName" type="text" placeholder="Nome e cognome, poi Invio" maxlength="60" autocomplete="off" data-fid="newName"></label>
+        <button type="button" class="btn primary" data-act="add-student" data-fid="add-student">${I.plus} Aggiungi</button>
+        <button type="button" class="btn" data-act="toggle-paste" data-fid="toggle-paste" aria-expanded="${UI.showPaste}">Incolla un elenco</button>
+        ${n > 1 ? '<button type="button" class="btn ghost" data-act="sort-az" data-fid="sort-az">Ordina A-Z</button>' : ''}
+      </div>
+      ${UI.showPaste ? `<div class="paste"><label for="pasteArea" class="flabel">Un nome per riga, anche copiato dal registro</label><textarea id="pasteArea" rows="7"></textarea><button type="button" class="btn primary" data-act="paste-add">Aggiungi tutti</button></div>` : ''}
+    </section>
+    ${checks.length ? `<section class="checks"><h2>Da controllare</h2><ul>${checks.map(c => '<li>' + MK_RED + '<span>' + esc(c) + '</span></li>').join('')}</ul></section>` : ''}
+    ${n ? `<section class="panel stu-list">
+      <div class="stu-head" aria-hidden="true"><span></span><span>Nome</span><span>Prima fila</span><span>Posto fisso</span><span>Accanto a</span><span>Non accanto a</span><span></span></div>
+      ${S.students.map(stuRowHTML).join('')}
+    </section>` : `<section class="panel empty-state"><h2>Nessun alunno</h2><p>Scrivi un nome qui sopra e premi Invio, oppure incolla l'elenco della classe.</p></section>`}
+  </div>`;
+}
+
+/* ---------- vista Posti ---------- */
+function activeHyp() {
+  let h = S.hyps.find(x => x.id === UI.activeHyp);
+  if (!h && S.hyps.length) { h = S.hyps[0]; UI.activeHyp = h.id; }
+  return h || null;
+}
+function onboardingHTML(nSeats, nStu) {
+  return `<section class="panel onboard"><h2>Per iniziare</h2><ol class="steps">
+    <li class="${nSeats ? 'done' : ''}"><span><strong>Disegna l'aula.</strong> ${nSeats ? "L'aula ha già " + plural(nSeats, 'banco', 'banchi') + ': puoi cambiarla quando vuoi.' : 'Scegli un modello o disegna i banchi a mano.'}</span><button type="button" class="btn small" data-act="goto" data-v="aula">Apri Aula</button></li>
+    <li class="${nStu ? 'done' : ''}"><span><strong>Inserisci gli alunni</strong> e, se servono, le preferenze: posto fisso, prima fila, compagni vicini o lontani.</span><button type="button" class="btn small" data-act="goto" data-v="alunni">Apri Alunni</button></li>
+    <li><span><strong>Genera le ipotesi</strong>, sistemale trascinando i nomi e salva nello storico quella scelta.</span></li>
+  </ol><p class="muted">Vuoi prima vedere come funziona? <button type="button" class="btn ghost small" data-act="demo">Carica una classe di esempio</button></p></section>`;
+}
+function issueHTML(it) {
+  return `<li class="issue ${it.sev}" tabindex="0" data-seats="${it.seats.join(' ')}">${it.sev === 'red' ? MK_RED : MK_BLUE}<span>${esc(it.text)}</span></li>`;
+}
+function renderPosti() {
+  const root = $('#view-posti');
+  const nSeats = Object.keys(S.layout.seats).length, nStu = S.students.length;
+  if (!nSeats || !nStu) { root.innerHTML = onboardingHTML(nSeats, nStu); return; }
+  const hyp = activeHyp(), last = sortedHistory().slice(-1)[0];
+  const info = last ? `<p class="lastinfo">Disposizione in vigore dal ${fmtShort(last.date)}. Prossimo cambio: ${fmtShort(addDays(last.date, S.settings.periodWeeks * 7))}.</p>` : '';
+  const tool = `<div class="ptool">
+      <button type="button" class="btn ${hyp ? '' : 'primary'}" data-act="gen" data-fid="gen">${I.shuffle} Genera ipotesi</button>
+      <button type="button" class="btn ghost" data-act="new-empty">${I.plus} Ipotesi vuota</button>
+      ${last ? `<button type="button" class="btn ghost" data-act="new-last">${I.plus} Parti dall'ultima</button>` : ''}
+      ${info}
+    </div>`;
+  if (!hyp) {
+    root.innerHTML = tool + `<section class="paper nohyp"><h2>Nessuna ipotesi in corso</h2>
+      <p>Genero tre proposte che rispettano le preferenze${S.history.length ? ' e cercano di evitare le ripetizioni rispetto allo storico' : ''}. Poi puoi sistemarle trascinando i nomi.</p>
+      <div class="row"><button type="button" class="btn primary big" data-act="gen">${I.shuffle} Genera ipotesi</button><button type="button" class="btn big" data-act="new-empty">Disponi a mano</button></div></section>`;
+    return;
+  }
+  const scrollLeft = $('#mapWrap') ? $('#mapWrap').scrollLeft : 0;
+  const tabs = S.hyps.map(h => {
+    const a = h === hyp ? null : analyze(h.assign);
+    return { h, a };
+  });
+  const A = analyze(hyp.assign);
+  const tabsHTML = tabs.map(({ h, a }) => `<div class="htab${h.id === hyp.id ? ' on' : ''}"><button type="button" class="htab-main" data-act="hyp" data-id="${esc(h.id)}" data-fid="hyp-${esc(h.id)}" aria-pressed="${h.id === hyp.id}">Ipotesi ${esc(h.name)} ${countsHTML(a || A)}</button><button type="button" class="htab-x" data-act="del-hyp" data-id="${esc(h.id)}" aria-label="Elimina l'ipotesi ${esc(h.name)}" title="Elimina">×</button></div>`).join('');
+  const pinned = new Set(S.students.filter(s => s.prefs.seat && hyp.assign[s.prefs.seat] === s.id).map(s => s.id));
+  const tray = A.unassigned.map(s => `<button type="button" class="chip${UI.sel && UI.sel.sid === s.id ? ' sel' : ''}" data-sid="${esc(s.id)}" data-fid="chip-${esc(s.id)}">${esc(s.name)}</button>`).join('');
+  root.innerHTML = tool + `<div class="htabs" role="group" aria-label="Ipotesi">${tabsHTML}</div>
+  <div class="work">
+    <section class="paper map-paper">
+      <div class="maphead">
+        <div class="mh-left"><h2>Ipotesi ${esc(hyp.name)}</h2><span class="origin">${esc(hyp.origin)}${hyp.edited ? ', ritoccata a mano' : ''}</span></div>
+        <div class="mh-acts">
+          <button type="button" class="btn small" data-act="undo" data-fid="undo" ${UI.undo.length ? '' : 'disabled'} title="Annulla (Ctrl+Z)">${I.undo} Annulla</button>
+          <button type="button" class="btn small" data-act="flip" data-fid="flip" aria-pressed="${S.settings.flip}">${I.rotate} Vista dalla cattedra</button>
+          <button type="button" class="btn small" data-act="print-hyp">${I.print} Stampa</button>
+          <button type="button" class="btn primary small" data-act="save-hyp">${I.save} Salva nello storico</button>
+        </div>
+      </div>
+      <p class="scrollhint" aria-hidden="true">Scorri la piantina di lato per vedere tutta l'aula</p>
+      <div class="map-wrap" id="mapWrap">${roomHTML(S.layout, hyp.assign, { mode: 'edit', flip: S.settings.flip, marks: A, pinned, animate: UI.animate })}</div>
+      <p class="howto">${isTouch()
+        ? 'Tieni premuto un nome e trascinalo su un altro banco per scambiarli, oppure tocca due nomi uno dopo l\'altro. Per togliere qualcuno dal suo banco, toccalo e poi tocca “Senza posto”.'
+        : 'Trascina un nome su un altro banco per scambiarli, oppure tocca due nomi uno dopo l\'altro. Per togliere qualcuno dal suo banco, trascinalo tra i “Senza posto”.'}</p>
+      ${legendHTML()}
+    </section>
+    <aside class="side">
+      <section class="panel">
+        <h3>Senza posto <span class="badge">${A.unassigned.length}</span></h3>
+        <div class="tray" data-drop="tray" style="margin-top:10px">${tray || '<span class="tray-empty">Tutti hanno un posto.</span>'}</div>
+      </section>
+      <section class="panel issues" id="issues">
+        <div class="ihead"><h3>Segnalazioni</h3>${countsHTML(A)}</div>
+        ${S.history.length ? depthSelectHTML() : ''}
+        ${A.issues.length ? '<ul>' + A.issues.map(issueHTML).join('') + '</ul>' : `<p class="allok">${I.check}<span>Tutte le preferenze sono rispettate${S.history.length ? ' e non ci sono ripetizioni rispetto allo storico' : ''}.</span></p>`}
+      </section>
+    </aside>
+  </div>`;
+  const mw = $('#mapWrap'); if (mw) mw.scrollLeft = scrollLeft;
+  UI.hl = '';
+  updateMapHint();
+}
+function isTouch() { try { return window.matchMedia('(pointer: coarse)').matches; } catch (e) { return false; } }
+function updateMapHint() {
+  const mw = $('#mapWrap'), p = mw && mw.closest('.map-paper');
+  if (p) p.classList.toggle('scrolls', mw.scrollWidth > mw.clientWidth + 4);
+}
+
+/* ---------- vista Storico ---------- */
+function rhythmText() {
+  const last = sortedHistory().slice(-1)[0];
+  if (!last) return '<span class="muted">Quando salvi una disposizione, qui trovi la data del prossimo cambio.</span>';
+  const next = addDays(last.date, S.settings.periodWeeks * 7), diff = daysBetween(todayISO(), next);
+  const when = diff > 1 ? 'tra ' + diff + ' giorni' : diff === 1 ? 'domani' : diff === 0 ? 'oggi' : diff === -1 ? 'era previsto ieri' : 'era previsto ' + (-diff) + ' giorni fa';
+  return `Ultimo cambio: <strong>${fmtDay(last.date)}</strong>. Prossimo: <strong>${fmtDay(next)}</strong> (${when}).`;
+}
+function entryHTML(e, open) {
+  const nameFn = id => (stu(id) ? stu(id).name : (e.names[id] || 'Alunno eliminato'));
+  const n = Object.keys(e.assign).length, id = esc(e.id);
+  return `<details class="entry" data-eid="${id}" ${open ? 'open' : ''}>
+    <summary><span class="edate">${fmtLong(e.date)}</span>${e.label ? `<span class="elabel">${esc(e.label)}</span>` : ''}<span class="ecount">${plural(n, 'alunno', 'alunni')}</span></summary>
+    <div class="ebody">
+      <div class="mini-wrap paper">${roomHTML(e.layout, e.assign, { mode: 'mini', flip: S.settings.flip, nameFn })}</div>
+      ${e.note ? `<p class="enote">${esc(e.note)}</p>` : ''}
+      <div class="eacts">
+        <button type="button" class="btn small" data-act="entry-base" data-id="${id}">${I.plus} Nuova ipotesi da questa</button>
+        <button type="button" class="btn small" data-act="entry-print" data-id="${id}">${I.print} Stampa</button>
+        <button type="button" class="btn small" data-act="entry-edit" data-id="${id}">Modifica data e nome</button>
+        <button type="button" class="btn small danger" data-act="entry-del" data-id="${id}">Elimina</button>
+      </div>
+    </div>
+  </details>`;
+}
+function summaryHTML() {
+  const all = sortedHistory(), tot = all.length, front = new Map(), mates = new Map();
+  const inc = (a, b) => { if (!mates.has(a)) mates.set(a, new Map()); const m = mates.get(a); m.set(b, (m.get(b) || 0) + 1); };
+  for (const e of all) {
+    for (const [k1, k2] of neighborPairs(e.layout)) { const a = e.assign[k1], b = e.assign[k2]; if (a && b) { inc(a, b); inc(b, a); } }
+    for (const k of Object.keys(e.assign)) if (e.layout.seats[k] && e.layout.seats[k].f) front.set(e.assign[k], (front.get(e.assign[k]) || 0) + 1);
+  }
+  const rows = S.students.slice().sort(byName).map(s => {
+    const m = mates.get(s.id);
+    const list = m ? Array.from(m.entries()).sort((x, y) => y[1] - x[1] || nameOf(x[0]).localeCompare(nameOf(y[0]), 'it')).map(([id, c]) => esc(nameOf(id)) + (c > 1 ? ` <span class="times">×${c}</span>` : '')).join(', ') : '<span class="muted">nessuno</span>';
+    const f = front.get(s.id) || 0;
+    return `<tr><th scope="row">${esc(s.name)}</th><td class="num">${f} su ${tot}</td><td>${list}</td></tr>`;
+  }).join('');
+  return `<section class="panel"><h2>Riepilogo per alunno</h2><div class="tablewrap"><table><thead><tr><th scope="col">Alunno</th><th scope="col">In prima fila</th><th scope="col">Vicini di banco avuti</th></tr></thead><tbody>${rows}</tbody></table></div></section>`;
+}
+function renderStorico() {
+  const hist = sortedHistory().reverse(), pw = S.settings.periodWeeks;
+  const openSet = UI.openEntries;
+  const entries = hist.map((e, i) => entryHTML(e, openSet ? openSet.has(e.id) : i === 0)).join('');
+  $('#view-storico').innerHTML = `<div class="storico">
+    <section class="panel rhythm">
+      <label class="inline">Cambio i posti ogni <input id="period" type="number" min="1" max="20" value="${pw}" data-fid="period"> <span id="periodUnit">${pw === 1 ? 'settimana' : 'settimane'}</span></label>
+      <p id="rhythmText">${rhythmText()}</p>
+      ${S.history.length ? depthSelectHTML() : ''}
+    </section>
+    ${hist.length ? `<div class="entries">${entries}</div>${S.students.length ? summaryHTML() : ''}` : `<section class="panel empty-state">
+      <h2>Lo storico è vuoto</h2>
+      <p>Quando salvi una disposizione dalla scheda Posti, compare qui con la sua data.</p>
+      <p>Hai già cambiato i posti prima di usare l'app? Crea un'ipotesi vuota, disponi gli alunni com'erano e salvala con la data di allora: le segnalazioni ne terranno conto.</p>
+      <button type="button" class="btn" data-act="new-empty">${I.plus} Crea un'ipotesi vuota</button></section>`}
+  </div>`;
+}
+/* =========================================================
+   Interazioni
+   ========================================================= */
+function go(tab) { UI.tab = tab; UI.sel = null; render(); window.scrollTo({ top: 0 }); }
+function toast(msg) {
+  const t = $('#toast'); t.textContent = msg; t.classList.add('on');
+  clearTimeout(UI.toastT); UI.toastT = setTimeout(() => t.classList.remove('on'), 2800);
+}
+function closeMenu() { const m = $('#dataMenu'); if (m) m.open = false; }
+
+/* ---------- finestre di dialogo ---------- */
+function openModal({ title, body, actions, onOpen }) {
+  closeModal(true);
+  const root = $('#modal-root');
+  root.innerHTML = `<div class="overlay" data-close="1"><div class="dialog" role="dialog" aria-modal="true" aria-labelledby="dlgTitle">
+    <h2 id="dlgTitle">${esc(title)}</h2><div class="dlg-body">${body}</div>
+    <div class="dlg-actions">${actions.map((a, i) => `<button type="button" class="btn ${a.kind || ''}" data-dlg="${i}">${esc(a.label)}</button>`).join('')}</div></div></div>`;
+  UI.modal = { prev: document.activeElement };
+  const ov = root.firstElementChild, dlg = ov.firstElementChild;
+  ov.addEventListener('click', ev => {
+    ev.stopPropagation();
+    if (ev.target === ov) { closeModal(); return; }
+    const b = ev.target.closest('[data-dlg]'); if (!b) return;
+    const a = actions[+b.dataset.dlg];
+    const r = a.onClick ? a.onClick(dlg) : undefined;
+    if (r !== false) closeModal();
+  });
+  if (onOpen) onOpen(dlg);
+  const first = dlg.querySelector('input:not([type=hidden]), textarea, select') || dlg.querySelector('.btn.primary, .btn.danger') || dlg.querySelector('.btn');
+  if (first) first.focus();
+}
+function closeModal(silent) {
+  const root = $('#modal-root'); if (!root.innerHTML) return;
+  root.innerHTML = '';
+  const prev = UI.modal && UI.modal.prev; UI.modal = null;
+  if (!silent && prev && document.contains(prev)) prev.focus();
+}
+function confirmBox(title, text, okLabel, onOk, kind) {
+  openModal({ title, body: '<p>' + text + '</p>', actions: [{ label: 'Annulla' }, { label: okLabel, kind: kind || 'primary', onClick: onOk }] });
+}
+
+/* ---------- ipotesi ---------- */
+function nextHypName() {
+  const used = new Set(S.hyps.map(h => h.name));
+  for (const ch of 'ABCDEFGHIJKLMNOPQRSTUVWXYZ') if (!used.has(ch)) return ch;
+  return String(S.hyps.length + 1);
+}
+function newHyp(assign, origin) {
+  const h = { id: uid(), name: nextHypName(), assign, origin, edited: false };
+  S.hyps.push(h); UI.activeHyp = h.id; UI.sel = null; UI.tab = 'posti';
+  commit(); return h;
+}
+function seatOf(h, sid) { for (const k of Object.keys(h.assign)) if (h.assign[k] === sid) return k; return null; }
+function assignFromEntry(e) {
+  const a = {}, used = new Set();
+  for (const k of Object.keys(e.assign)) {
+    const sid = e.assign[k];
+    if (S.layout.seats[k] && stu(sid) && !used.has(sid)) { a[k] = sid; used.add(sid); }
+  }
+  return a;
+}
+function pushUndo(h) { UI.undo.push({ id: h.id, assign: Object.assign({}, h.assign), edited: h.edited }); if (UI.undo.length > 60) UI.undo.shift(); }
+function undo() {
+  const u = UI.undo.pop(); if (!u) return;
+  const h = S.hyps.find(x => x.id === u.id); if (!h) { undo(); return; }
+  h.assign = u.assign; h.edited = u.edited; UI.activeHyp = h.id; UI.sel = null; commit();
+}
+function moveStudent(sid, target) {
+  const h = activeHyp(); if (!h || !stu(sid)) return;
+  const A = h.assign, from = seatOf(h, sid);
+  if (target.type === 'seat') {
+    const k = target.key; if (!S.layout.seats[k] || from === k) { UI.sel = null; renderPosti(); return; }
+    pushUndo(h);
+    const occ = A[k];
+    A[k] = sid;
+    if (from) { if (occ) A[from] = occ; else delete A[from]; }
+  } else {
+    if (!from) { UI.sel = null; renderPosti(); return; }
+    pushUndo(h); delete A[from];
+  }
+  h.edited = true; UI.sel = null; commit();
+}
+function onChipClick(sid) {
+  const h = activeHyp(); if (!h) return;
+  if (!UI.sel) { UI.sel = { sid }; renderPosti(); focusChip(sid); return; }
+  if (UI.sel.sid === sid) { UI.sel = null; renderPosti(); focusChip(sid); return; }
+  const here = seatOf(h, sid), selHere = seatOf(h, UI.sel.sid);
+  if (here) moveStudent(UI.sel.sid, { type: 'seat', key: here });
+  else if (selHere) moveStudent(sid, { type: 'seat', key: selHere });
+  else { UI.sel = { sid }; renderPosti(); focusChip(sid); }
+}
+function focusChip(sid) { const c = document.querySelector('.chip[data-sid="' + cssq(sid) + '"]'); if (c) c.focus({ preventScroll: true }); }
+function startGenerate() {
+  if (!S.students.length) { toast('Inserisci prima gli alunni.'); return; }
+  if (!Object.keys(S.layout.seats).length) { toast('Disegna prima i banchi nella scheda Aula.'); return; }
+  const run = mode => {
+    const busy = document.createElement('div'); busy.className = 'busy'; busy.innerHTML = '<span>Cerco le combinazioni migliori…</span>'; document.body.appendChild(busy);
+    setTimeout(() => {
+      try {
+        const res = generateAssignments(3);
+        if (mode === 'replace') { S.hyps = []; UI.undo = []; }
+        let first = null;
+        for (const a of res) { const h = { id: uid(), name: nextHypName(), assign: a, origin: 'generata automaticamente', edited: false }; S.hyps.push(h); if (!first) first = h; }
+        if (first) UI.activeHyp = first.id;
+        UI.sel = null; UI.tab = 'posti'; UI.animate = true;
+        commit();
+      } finally { UI.animate = false; busy.remove(); }
+    }, 40);
+  };
+  if (S.hyps.length) openModal({ title: 'Nuove ipotesi', body: '<p>Vuoi sostituire le ipotesi in corso o aggiungerne altre tre?</p>', actions: [{ label: 'Annulla' }, { label: 'Aggiungi', onClick: () => run('add') }, { label: 'Sostituisci', kind: 'primary', onClick: () => run('replace') }] });
+  else run('replace');
+}
+function deleteHyp(id) {
+  const h = S.hyps.find(x => x.id === id); if (!h) return;
+  const doIt = () => { S.hyps = S.hyps.filter(x => x !== h); UI.undo = UI.undo.filter(u => u.id !== id); if (UI.activeHyp === id) UI.activeHyp = S.hyps[0] ? S.hyps[0].id : null; UI.sel = null; commit(); };
+  if (h.edited) confirmBox('Eliminare l\'ipotesi ' + h.name + '?', 'Contiene spostamenti fatti a mano che andranno persi.', 'Elimina', doIt, 'danger');
+  else doIt();
+}
+function openSaveDialog() {
+  const h = activeHyp(); if (!h) return;
+  const A = analyze(h.assign), out = A.unassigned.length;
+  const last = sortedHistory().slice(-1)[0];
+  const notes = [];
+  if (out) notes.push(out === 1 ? '1 alunno è senza posto e non comparirà in questa disposizione.' : out + ' alunni sono senza posto e non compariranno in questa disposizione.');
+  if (A.nRed) notes.push('Restano ' + plural(A.nRed, 'segnalazione', 'segnalazioni') + ' in rosso. Puoi salvare lo stesso.');
+  openModal({
+    title: 'Salva nello storico',
+    body: `<label class="field"><span class="flabel">In vigore dal</span><input type="date" id="dlgDate" value="${todayISO()}"></label>
+      <label class="field"><span class="flabel">Nome (facoltativo)</span><input type="text" id="dlgLabel" maxlength="40" placeholder="Per esempio: ottobre"></label>
+      <label class="field"><span class="flabel">Note (facoltative)</span><textarea id="dlgNote" rows="2" maxlength="400"></textarea></label>
+      ${last ? `<p class="muted">L'ultima disposizione salvata è del ${fmtLong(last.date)}.</p>` : ''}
+      ${notes.map(n => '<p class="dlg-warn">' + MK_RED + '<span>' + esc(n) + '</span></p>').join('')}`,
+    actions: [{ label: 'Annulla' }, {
+      label: 'Salva nello storico', kind: 'primary', onClick: dlg => {
+        const date = $('#dlgDate', dlg).value;
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) { $('#dlgDate', dlg).focus(); toast('Indica la data da cui vale la disposizione.'); return false; }
+        saveEntry(h, date, $('#dlgLabel', dlg).value.trim(), $('#dlgNote', dlg).value.trim());
+      }
+    }]
+  });
+}
+function saveEntry(h, date, label, note) {
+  const names = {};
+  for (const k of Object.keys(h.assign)) names[h.assign[k]] = nameOf(h.assign[k]);
+  const e = { id: uid(), date, label, note, layout: clone(S.layout), assign: Object.assign({}, h.assign), names };
+  S.history.push(e);
+  S.hyps = []; UI.activeHyp = null; UI.undo = []; UI.sel = null; UI.openEntries = new Set([e.id]);
+  UI.tab = 'storico'; commit(); window.scrollTo({ top: 0 });
+  toast('Disposizione salvata nello storico');
+}
+function openEntryEdit(e) {
+  openModal({
+    title: 'Modifica la disposizione',
+    body: `<label class="field"><span class="flabel">In vigore dal</span><input type="date" id="dlgDate" value="${e.date}"></label>
+      <label class="field"><span class="flabel">Nome (facoltativo)</span><input type="text" id="dlgLabel" maxlength="40" value="${esc(e.label)}"></label>
+      <label class="field"><span class="flabel">Note (facoltative)</span><textarea id="dlgNote" rows="2" maxlength="400">${esc(e.note)}</textarea></label>`,
+    actions: [{ label: 'Annulla' }, {
+      label: 'Salva le modifiche', kind: 'primary', onClick: dlg => {
+        const date = $('#dlgDate', dlg).value;
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) { $('#dlgDate', dlg).focus(); return false; }
+        e.date = date; e.label = $('#dlgLabel', dlg).value.trim(); e.note = $('#dlgNote', dlg).value.trim(); commit();
+      }
+    }]
+  });
+}
+
+/* ---------- trascinamento dei nomi ---------- */
+let drag = null;
+function onChipDown(e) {
+  const chip = e.target.closest('#view-posti .chip'); if (!chip) return;
+  if (e.pointerType === 'mouse' && e.button !== 0) return;
+  const r = chip.getBoundingClientRect();
+  const touch = e.pointerType !== 'mouse';
+  drag = { sid: chip.dataset.sid, chip, id: e.pointerId, x0: e.clientX, y0: e.clientY, x: e.clientX, y: e.clientY, offX: Math.min(e.clientX - r.left, 44), started: false, over: null, ghost: null, touch, timer: null };
+  // Al tocco il nome si "solleva" solo dopo una breve pressione: uno sfioramento fa scorrere la pagina.
+  if (touch) {
+    chip.classList.add('pressing');
+    drag.timer = setTimeout(() => { if (drag && !drag.started) liftDrag(drag.x, drag.y); }, 320);
+  }
+  window.addEventListener('pointermove', onDragMove, { passive: false });
+  window.addEventListener('pointerup', onDragUp);
+  window.addEventListener('pointercancel', cleanupDrag);
+}
+function dropAt(x, y) { const el = document.elementFromPoint(x, y); return el ? el.closest('[data-drop]') : null; }
+function liftDrag(x, y) {
+  drag.started = true;
+  clearTimeout(drag.timer); drag.chip.classList.remove('pressing');
+  const g = document.createElement('div'); g.className = 'drag-ghost'; g.textContent = nameOf(drag.sid);
+  document.body.appendChild(g); drag.ghost = g;
+  drag.chip.classList.add('dragging'); document.body.classList.add('is-dragging');
+  UI.sel = null; $$('.seat.sel, .chip.sel').forEach(x => x.classList.remove('sel'));
+  if (drag.touch && navigator.vibrate) { try { navigator.vibrate(12); } catch (err) { /* nessuna vibrazione */ } }
+  moveGhost(x, y);
+}
+function moveGhost(x, y) {
+  // Al tocco il nome compare sopra il dito, così resta visibile.
+  const dy = drag.touch ? 64 : 22;
+  drag.ghost.style.transform = 'translate(' + (x - drag.offX) + 'px,' + (y - dy) + 'px)';
+}
+function onDragMove(e) {
+  if (!drag || e.pointerId !== drag.id) return;
+  drag.x = e.clientX; drag.y = e.clientY;
+  if (!drag.started) {
+    const moved = Math.hypot(e.clientX - drag.x0, e.clientY - drag.y0);
+    if (drag.touch) { if (moved > 10) cleanupDrag(); return; }
+    if (moved < 7) return;
+    liftDrag(e.clientX, e.clientY);
+  }
+  e.preventDefault();
+  moveGhost(e.clientX, e.clientY);
+  const t = dropAt(e.clientX, e.clientY);
+  if (t !== drag.over) { if (drag.over) drag.over.classList.remove('drop-over'); if (t) t.classList.add('drop-over'); drag.over = t; }
+  const edge = 56;
+  if (e.clientY < edge) window.scrollBy(0, -14); else if (e.clientY > window.innerHeight - edge) window.scrollBy(0, 14);
+  const mw = $('#mapWrap');
+  if (mw) { const rr = mw.getBoundingClientRect(); if (e.clientX < rr.left + 30) mw.scrollLeft -= 12; else if (e.clientX > rr.right - 30) mw.scrollLeft += 12; }
+}
+function onDragUp(e) {
+  if (!drag || e.pointerId !== drag.id) return;
+  const d = drag; cleanupDrag();
+  if (!d.started) return;
+  UI.suppressClick = true; setTimeout(() => { UI.suppressClick = false; }, 60);
+  const t = dropAt(e.clientX, e.clientY); if (!t) return;
+  const spec = t.dataset.drop;
+  if (spec === 'tray') moveStudent(d.sid, { type: 'tray' });
+  else if (spec.indexOf('seat:') === 0) moveStudent(d.sid, { type: 'seat', key: spec.slice(5) });
+}
+function cleanupDrag() {
+  window.removeEventListener('pointermove', onDragMove);
+  window.removeEventListener('pointerup', onDragUp);
+  window.removeEventListener('pointercancel', cleanupDrag);
+  if (drag) { clearTimeout(drag.timer); if (drag.ghost) drag.ghost.remove(); if (drag.over) drag.over.classList.remove('drop-over'); drag.chip.classList.remove('dragging', 'pressing'); }
+  document.body.classList.remove('is-dragging');
+  drag = null;
+}
+
+/* ---------- disegno dei banchi ---------- */
+let paint = null;
+const NO_SEAT_MSG = 'Qui non c\'è un banco: prima aggiungilo con lo strumento “Banchi”.';
+function paintMode(k) {
+  const seat = S.layout.seats[k];
+  if (UI.tool === 'seat') return seat ? 'del' : 'add';
+  if (!seat) return null;
+  return seat.f ? 'unfront' : 'front';
+}
+function onEditorDown(e) {
+  const cell = e.target.closest('#egrid [data-cell]'); if (!cell) return;
+  if (e.pointerType === 'mouse' && e.button !== 0) return;
+  const k = cell.dataset.cell;
+  if (e.pointerType !== 'mouse') {
+    // Al tocco: un tocco cambia il quadretto, una strisciata orizzontale disegna,
+    // una strisciata verticale fa scorrere la pagina senza toccare nulla.
+    paint = { pending: true, k, x0: e.clientX, y0: e.clientY, done: new Set(), changed: false };
+  } else {
+    e.preventDefault();
+    const mode = paintMode(k);
+    if (!mode) { toast(NO_SEAT_MSG); return; }
+    paint = { mode, done: new Set(), changed: false };
+    applyPaint(k);
+  }
+  window.addEventListener('pointermove', onEditorMove);
+  window.addEventListener('pointerup', onEditorUp);
+  window.addEventListener('pointercancel', onEditorUp);
+}
+function onEditorMove(e) {
+  if (!paint) return;
+  if (paint.pending) {
+    const dx = Math.abs(e.clientX - paint.x0), dy = Math.abs(e.clientY - paint.y0);
+    if (dx < 8 && dy < 8) return;
+    const mode = dx > dy ? paintMode(paint.k) : null;
+    if (!mode) { paint = null; return; }
+    paint.pending = false; paint.mode = mode; applyPaint(paint.k);
+  }
+  const el = document.elementFromPoint(e.clientX, e.clientY), cell = el && el.closest('#egrid [data-cell]');
+  if (cell) applyPaint(cell.dataset.cell);
+}
+function onEditorUp(e) {
+  window.removeEventListener('pointermove', onEditorMove);
+  window.removeEventListener('pointerup', onEditorUp);
+  window.removeEventListener('pointercancel', onEditorUp);
+  if (paint && paint.pending && e && e.type === 'pointerup') {
+    const mode = paintMode(paint.k);
+    if (!mode) toast(NO_SEAT_MSG); else { paint.mode = mode; applyPaint(paint.k); }
+  }
+  if (paint && paint.changed) { afterLayout(); touch(); }
+  paint = null;
+}
+function applyPaint(k) {
+  if (paint.done.has(k)) return;
+  paint.done.add(k);
+  const L = S.layout, seat = L.seats[k];
+  if (paint.mode === 'add' && !seat) L.seats[k] = { f: parseKey(k)[0] === 0 };
+  else if (paint.mode === 'del' && seat) delete L.seats[k];
+  else if (paint.mode === 'front' && seat && !seat.f) seat.f = true;
+  else if (paint.mode === 'unfront' && seat && seat.f) seat.f = false;
+  else return;
+  paint.changed = true;
+  refreshEditor();
+}
+function toggleCellByKeyboard(k) {
+  const L = S.layout;
+  if (UI.tool === 'seat') { if (L.seats[k]) delete L.seats[k]; else L.seats[k] = { f: parseKey(k)[0] === 0 }; }
+  else if (L.seats[k]) L.seats[k].f = !L.seats[k].f;
+  else return;
+  afterLayout(); touch(); refreshEditor();
+  const c = document.querySelector('[data-fid="cell-' + k + '"]'); if (c) c.focus();
+}
+function gridStep(k, d) {
+  const L = S.layout;
+  const rows = k === 'rows' ? clamp(L.rows + d, 1, MAXR) : L.rows, cols = k === 'cols' ? clamp(L.cols + d, 1, MAXC) : L.cols;
+  let removed = 0;
+  for (const key of Object.keys(L.seats)) { const [r, c] = parseKey(key); if (r >= rows || c >= cols) { delete L.seats[key]; removed++; } }
+  L.rows = rows; L.cols = cols; afterLayout(); commit();
+  if (removed) toast((removed === 1 ? 'Tolto 1 banco' : 'Tolti ' + removed + ' banchi') + ' insieme alla ' + (k === 'rows' ? 'riga' : 'colonna') + '.');
+}
+function applyPreset() {
+  const doIt = () => {
+    S.layout = presetLayout(UI.preset); afterLayout(); commit();
+    toast('Aula aggiornata: ' + plural(Object.keys(S.layout.seats).length, 'banco', 'banchi') + '.');
+  };
+  if (S.hyps.some(h => Object.keys(h.assign).length)) confirmBox('Cambiare i banchi dell\'aula?', 'Nelle ipotesi in corso, chi si trova su un banco che sparisce torna tra i “Senza posto”. Lo storico non cambia.', 'Usa il modello', doIt);
+  else doIt();
+}
+
+/* ---------- alunni ---------- */
+function addFromInput() {
+  const inp = $('#newName'); if (!inp) return;
+  const v = inp.value.trim();
+  if (!v) { inp.focus(); return; }
+  if (addStudents([v])) { commit(); const n = $('#newName'); if (n) { n.value = ''; n.focus(); } }
+}
+function addFromPaste() {
+  const ta = $('#pasteArea'); if (!ta) return;
+  const lines = ta.value.split(/\r?\n|;/).map(x => x.replace(/^\s*\d+[.)\-\s]+/, '').trim()).filter(Boolean);
+  if (!lines.length) { ta.focus(); return; }
+  const n = addStudents(lines);
+  UI.showPaste = false; commit();
+  toast(n === 1 ? 'Aggiunto 1 alunno.' : 'Aggiunti ' + n + ' alunni.');
+}
+
+/* ---------- dati: esporta, importa, esempio ---------- */
+function exportData() {
+  const data = JSON.stringify(S, null, 2);
+  const cls = (S.className || '').normalize('NFD').replace(/[^\w]+/g, '');
+  const name = 'posti-in-aula' + (cls ? '-' + cls : '') + '-' + todayISO() + '.json';
+  try {
+    const url = URL.createObjectURL(new Blob([data], { type: 'application/json' }));
+    const a = document.createElement('a'); a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 2000);
+    if (UI.storage === 'file') UI.dirty = false;
+    renderStatus(); toast('Backup esportato: ' + name);
+  } catch (err) { showDataText(); }
+}
+function showDataText() {
+  openModal({
+    title: 'I dati come testo',
+    body: '<p class="muted">Copia tutto il testo e incollalo in un file o in una nota: potrai reimportarlo con “Importa un backup”.</p><textarea id="dlgData" rows="10" readonly>' + esc(JSON.stringify(S)) + '</textarea>',
+    actions: [{ label: 'Chiudi' }, { label: 'Seleziona tutto', kind: 'primary', onClick: dlg => { const t = $('#dlgData', dlg); t.focus(); t.select(); try { document.execCommand('copy'); toast('Testo copiato.'); } catch (e) { /* copia manuale */ } return false; } }]
+  });
+}
+function openImportDialog() {
+  openModal({
+    title: 'Importa un backup',
+    body: `<p>Scegli il file .json esportato in precedenza, oppure incolla qui il suo contenuto. I dati attuali verranno sostituiti.</p>
+      <p><button type="button" class="btn" id="dlgPick">Scegli il file</button> <span id="dlgFile" class="muted"></span></p>
+      <textarea id="dlgText" rows="6" placeholder="Oppure incolla qui il testo del backup"></textarea>`,
+    actions: [{ label: 'Annulla' }, { label: 'Importa', kind: 'primary', onClick: dlg => { const t = $('#dlgText', dlg).value.trim(); if (!t) { toast('Scegli un file o incolla il testo del backup.'); return false; } return importText(t); } }],
+    onOpen: dlg => { $('#dlgPick', dlg).addEventListener('click', () => { const f = $('#importFile'); f.value = ''; f.click(); }); }
+  });
+}
+function importText(txt) {
+  let raw;
+  try { raw = JSON.parse(txt); } catch (e) { toast('Il testo non è un backup valido.'); return false; }
+  if (!raw || typeof raw !== 'object' || (raw.app !== 'posti-in-aula' && !raw.layout)) { toast('Questo file non sembra un backup di Posti in aula.'); return false; }
+  S = normalize(raw);
+  UI.activeHyp = S.hyps[0] ? S.hyps[0].id : null; UI.undo = []; UI.sel = null; UI.openEntries = null;
+  commit();
+  if (UI.storage === 'file') { UI.dirty = false; renderStatus(); }
+  toast('Backup importato: ' + plural(S.students.length, 'alunno', 'alunni') + ', ' + plural(S.history.length, 'disposizione', 'disposizioni') + ' nello storico.');
+  return true;
+}
+function loadDemo() {
+  const names = ['Alessandro Bianchi', 'Anna Villa', 'Beatrice Colombo', 'Camilla Ferri', 'Davide Galli', 'Elena Marini', 'Filippo Conti', 'Gabriele Costa', 'Giulia Romano', 'Leonardo Greco', 'Luca Barbieri', 'Marco Gatti', 'Martina Lombardi', 'Matteo Fontana', 'Nicolò Moretti', 'Pietro Rinaldi', 'Rebecca Caruso', 'Riccardo Ferrara', 'Sara De Luca', 'Sofia Mancini', 'Tommaso Esposito', 'Viola Santoro'];
+  S = emptyState(); S.className = '3ª prova';
+  S.students = names.map(n => ({ id: uid(), name: n, prefs: normPrefs(null) }));
+  const by = n => S.students.find(s => s.name.indexOf(n) === 0);
+  by('Tommaso').prefs.front = 'yes';
+  by('Elena').prefs.front = 'no';
+  setMate(by('Giulia'), by('Sofia').id);
+  addAvoid(by('Luca').id, by('Matteo').id);
+  const mk = (days, label) => {
+    const a = generateAssignments(1)[0], nm = {};
+    for (const k of Object.keys(a)) nm[a[k]] = nameOf(a[k]);
+    S.history.push({ id: uid(), date: addDays(todayISO(), days), label, note: '', layout: clone(S.layout), assign: a, names: nm });
+  };
+  mk(-56, 'Esempio 1'); mk(-28, 'Esempio 2');
+  S.hyps = []; UI.activeHyp = null; UI.undo = []; UI.sel = null; UI.openEntries = null;
+  UI.tab = 'posti'; commit();
+  toast('Classe di esempio caricata: 22 alunni e 2 disposizioni nello storico.');
+}
+function confirmReset() {
+  confirmBox('Cancellare tutti i dati?', 'Alunni, aula, ipotesi e storico verranno eliminati. Se vuoi conservarli, esporta prima un backup.', 'Cancella tutto', () => {
+    S = emptyState(); UI.activeHyp = null; UI.undo = []; UI.sel = null; UI.openEntries = null; UI.tab = 'posti'; commit(); toast('Dati cancellati.');
+  }, 'danger');
+}
+
+/* ---------- stampa ---------- */
+function fillPrint(L, assign, sub, nameFn) {
+  $('#print-root').innerHTML = `<div class="sheet"><div class="sheet-head"><h1>${esc(S.className || 'Classe')}</h1><p>${esc(sub)}${S.settings.flip ? ', vista dalla cattedra' : ''}</p></div>${roomHTML(L, assign, { mode: 'print', flip: S.settings.flip, nameFn })}</div>`;
+}
+function printHyp() {
+  const h = activeHyp(); if (!h) return;
+  fillPrint(S.layout, h.assign, 'Ipotesi ' + h.name + ', ' + fmtLong(todayISO()));
+  doPrint();
+}
+function printEntry(e) {
+  fillPrint(e.layout, e.assign, 'Posti dal ' + fmtLong(e.date) + (e.label ? ' (' + e.label + ')' : ''), id => (stu(id) ? stu(id).name : (e.names[id] || '')));
+  doPrint();
+}
+function doPrint() { setTimeout(() => { try { window.print(); } catch (err) { toast('Stampa non disponibile qui: scarica il file e aprilo nel browser.'); } }, 60); }
+
+/* ---------- smistamento degli eventi ---------- */
+function handleAct(act, el) {
+  const d = el.dataset;
+  switch (act) {
+    case 'goto': go(d.v); break;
+    case 'ptype': UI.preset.type = d.v; renderAula(); break;
+    case 'pstep': UI.preset[d.k] += +d.d; fixPreset(UI.preset); render(); break;
+    case 'pset': UI.preset[d.k] = +d.v; fixPreset(UI.preset); render(); break;
+    case 'apply-preset': applyPreset(); break;
+    case 'tool': UI.tool = d.v; render(); break;
+    case 'gstep': gridStep(d.k, +d.d); break;
+    case 'auto-front': autoFront(S.layout); afterLayout(); commit(); toast('Prima fila: la fila di banchi più vicina alla cattedra.'); break;
+    case 'add-student': addFromInput(); break;
+    case 'toggle-paste': UI.showPaste = !UI.showPaste; render(); if (UI.showPaste && $('#pasteArea')) $('#pasteArea').focus(); break;
+    case 'paste-add': addFromPaste(); break;
+    case 'sort-az': S.students.sort(byName); commit(); break;
+    case 'del-student': { const s = stu(d.sid); if (s) confirmBox('Eliminare ' + s.name + '?', 'Sparirà dall\'elenco e dalle ipotesi in corso. Nelle disposizioni già salvate resta il suo nome.', 'Elimina', () => { deleteStudent(s.id); commit(); }, 'danger'); break; }
+    case 'front': { const s = stu(d.sid); if (s) { s.prefs.front = d.v; commit(); } break; }
+    case 'unavoid': removeAvoid(d.sid, d.o); commit(); break;
+    case 'gen': startGenerate(); break;
+    case 'hyp': UI.activeHyp = d.id; UI.sel = null; render(); break;
+    case 'del-hyp': deleteHyp(d.id); break;
+    case 'new-empty': newHyp({}, 'disposta a mano'); break;
+    case 'new-last': { const last = sortedHistory().slice(-1)[0]; if (last) newHyp(assignFromEntry(last), 'copia della disposizione del ' + fmtShort(last.date)); break; }
+    case 'undo': undo(); break;
+    case 'flip': S.settings.flip = !S.settings.flip; commit(); break;
+    case 'print-hyp': printHyp(); break;
+    case 'save-hyp': openSaveDialog(); break;
+    case 'entry-base': { const e = S.history.find(x => x.id === d.id); if (e) { newHyp(assignFromEntry(e), 'copia della disposizione del ' + fmtShort(e.date)); window.scrollTo({ top: 0 }); } break; }
+    case 'entry-print': { const e = S.history.find(x => x.id === d.id); if (e) printEntry(e); break; }
+    case 'entry-edit': { const e = S.history.find(x => x.id === d.id); if (e) openEntryEdit(e); break; }
+    case 'entry-del': { const e = S.history.find(x => x.id === d.id); if (e) confirmBox('Eliminare la disposizione del ' + fmtLong(e.date) + '?', 'Non verrà più considerata nelle segnalazioni.', 'Elimina', () => { S.history = S.history.filter(x => x !== e); commit(); }, 'danger'); break; }
+    case 'export': closeMenu(); exportData(); break;
+    case 'import': closeMenu(); openImportDialog(); break;
+    case 'show-text': closeMenu(); showDataText(); break;
+    case 'demo': closeMenu(); if (S.students.length || S.history.length) confirmBox('Caricare la classe di esempio?', 'I dati attuali verranno sostituiti. Se vuoi conservarli, esporta prima un backup.', 'Carica l\'esempio', loadDemo); else loadDemo(); break;
+    case 'reset': closeMenu(); confirmReset(); break;
+    case 'banner-off': UI.bannerOff = true; renderBanner(); break;
+  }
+}
+function setHL(str) {
+  if (UI.hl === str) return;
+  UI.hl = str;
+  $$('.seat.hl').forEach(s => s.classList.remove('hl'));
+  if (str) str.split(' ').forEach(k => { const el = document.querySelector('#view-posti .seat[data-k="' + k + '"]'); if (el) el.classList.add('hl'); });
+}
+function isTyping(t) { return t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.tagName === 'SELECT' || t.isContentEditable); }
+
+function bindEvents() {
+  document.addEventListener('click', e => {
+    const t = e.target;
+    const menu = $('#dataMenu');
+    if (menu && menu.open && !menu.contains(t)) menu.open = false;
+    const tab = t.closest('[data-tab]'); if (tab) { go(tab.dataset.tab); return; }
+    const act = t.closest('[data-act]'); if (act && !act.disabled) { handleAct(act.dataset.act, act); return; }
+    if (UI.suppressClick) return;
+    const chip = t.closest('#view-posti .chip'); if (chip) { onChipClick(chip.dataset.sid); return; }
+    const empty = t.closest('#view-posti [data-empty]');
+    if (empty) { if (UI.sel) moveStudent(UI.sel.sid, { type: 'seat', key: empty.dataset.empty }); else toast('Tocca prima un nome, poi il banco libero.'); return; }
+    const issue = t.closest('.issue');
+    if (issue) { setHL(''); setHL(issue.dataset.seats); const k = issue.dataset.seats.split(' ')[0]; const s = k && document.querySelector('#view-posti .seat[data-k="' + k + '"]'); if (s) s.scrollIntoView({ block: 'nearest', inline: 'nearest' }); return; }
+    const tray = t.closest('[data-drop="tray"]');
+    if (tray && UI.sel) { const h = activeHyp(); if (h && seatOf(h, UI.sel.sid)) moveStudent(UI.sel.sid, { type: 'tray' }); return; }
+    const cell = t.closest('#egrid [data-cell]'); if (cell && e.detail === 0) { toggleCellByKeyboard(cell.dataset.cell); return; }
+  });
+  document.addEventListener('pointerdown', e => {
+    if (e.target.closest('#view-posti .chip')) onChipDown(e);
+    else if (e.target.closest('#egrid [data-cell]')) onEditorDown(e);
+  });
+  document.addEventListener('touchmove', e => { if (drag && drag.started) e.preventDefault(); }, { passive: false });
+  document.addEventListener('contextmenu', e => { if (e.target.closest && e.target.closest('#view-posti .chip')) e.preventDefault(); });
+  window.addEventListener('resize', debounce(updateMapHint, 150));
+  document.addEventListener('change', e => {
+    const t = e.target, f = t.dataset.field;
+    if (t.name === 'adj') { S.layout.adj = t.value === 'hv' ? 'hv' : 'h'; commit(); return; }
+    if (t.id === 'importFile') {
+      const file = t.files && t.files[0]; if (!file) return;
+      const rd = new FileReader();
+      rd.onload = () => { const ta = $('#dlgText'); if (ta) { ta.value = String(rd.result); const fn = $('#dlgFile'); if (fn) fn.textContent = file.name; } else importText(String(rd.result)); };
+      rd.onerror = () => toast('Non riesco a leggere il file.');
+      rd.readAsText(file); return;
+    }
+    if (t.classList.contains('name') && t.dataset.sid) {
+      const s = stu(t.dataset.sid); if (!s) return;
+      const v = t.value.replace(/\s+/g, ' ').trim() || 'Senza nome';
+      s.name = v; t.value = v; touch(); return;
+    }
+    if (t.id === 'className') { S.className = t.value.trim(); touch(); renderHeader(); return; }
+    if (!f) return;
+    if (f === 'depth') { S.settings.depth = clamp(parseInt(t.value, 10) || 0, 0, 50); commit(); return; }
+    const s = stu(t.dataset.sid); if (!s) return;
+    if (f === 'seat') s.prefs.seat = t.value || null;
+    else if (f === 'mate') setMate(s, t.value || null);
+    else if (f === 'avoid' && t.value) addAvoid(s.id, t.value);
+    commit();
+  });
+  document.addEventListener('input', e => {
+    const t = e.target;
+    if (t.classList.contains('name') && t.dataset.sid) {
+      const s = stu(t.dataset.sid); if (!s) return;
+      s.name = t.value.slice(0, 60);
+      $$('#view-alunni option[value="' + cssq(s.id) + '"]').forEach(o => { o.textContent = s.name; });
+      $$('#view-alunni .tag[data-o="' + cssq(s.id) + '"] .tname').forEach(o => { o.textContent = s.name; });
+      touch();
+    } else if (t.id === 'className') { S.className = t.value; touch(); }
+    else if (t.id === 'period') {
+      const v = parseInt(t.value, 10); if (!v) return;
+      S.settings.periodWeeks = clamp(v, 1, 20); touch();
+      const rt = $('#rhythmText'); if (rt) rt.innerHTML = rhythmText();
+      const pu = $('#periodUnit'); if (pu) pu.textContent = S.settings.periodWeeks === 1 ? 'settimana' : 'settimane';
+    }
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      if (UI.modal) { closeModal(); return; }
+      if (drag) { cleanupDrag(); return; }
+      if (UI.sel) { const sid = UI.sel.sid; UI.sel = null; renderPosti(); focusChip(sid); return; }
+      closeMenu();
+    }
+    if (e.key === 'Enter' && e.target.id === 'newName') { e.preventDefault(); addFromInput(); }
+    if ((e.ctrlKey || e.metaKey) && !e.shiftKey && e.key.toLowerCase() === 'z' && UI.tab === 'posti' && !UI.modal && !isTyping(e.target)) { e.preventDefault(); undo(); }
+    if ((e.key === 'ArrowRight' || e.key === 'ArrowLeft') && e.target.matches('.tabs [data-tab]')) {
+      const tabs = $$('.tabs [data-tab]'), i = tabs.indexOf(e.target), n = tabs[(i + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length];
+      go(n.dataset.tab); n.focus();
+    }
+  });
+  const hlOver = e => { const it = e.target.closest && e.target.closest('.issue'); if (it) setHL(it.dataset.seats); };
+  const hlOut = e => { const it = e.target.closest && e.target.closest('.issue'); if (it && !(e.relatedTarget && it.contains(e.relatedTarget))) setHL(''); };
+  $('#view-posti').addEventListener('mouseover', hlOver);
+  $('#view-posti').addEventListener('mouseout', hlOut);
+  $('#view-posti').addEventListener('focusin', hlOver);
+  $('#view-posti').addEventListener('focusout', hlOut);
+  $('#view-storico').addEventListener('toggle', e => {
+    const d = e.target; if (!d.matches || !d.matches('details.entry')) return;
+    if (!UI.openEntries) UI.openEntries = new Set($$('#view-storico details.entry[open]').map(x => x.dataset.eid));
+    if (d.open) UI.openEntries.add(d.dataset.eid); else UI.openEntries.delete(d.dataset.eid);
+  }, true);
+  window.addEventListener('beforeprint', () => {
+    if ($('#print-root').innerHTML) return;
+    const h = activeHyp(), last = sortedHistory().slice(-1)[0];
+    if (h) fillPrint(S.layout, h.assign, 'Ipotesi ' + h.name + ', ' + fmtLong(todayISO()));
+    else if (last) fillPrint(last.layout, last.assign, 'Posti dal ' + fmtLong(last.date), id => (stu(id) ? stu(id).name : (last.names[id] || '')));
+  });
+  window.addEventListener('afterprint', () => { $('#print-root').innerHTML = ''; });
+  const flush = () => { if (UI.storage === 'local' && Store.pending()) Store.save(); };
+  window.addEventListener('pagehide', flush);
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') flush(); });
+  window.addEventListener('beforeunload', e => {
+    flush();
+    if ((UI.storage === 'file' && UI.dirty) || (UI.storage === 'local' && UI.saveError)) { e.preventDefault(); e.returnValue = ''; }
+  });
+  window.addEventListener('storage', e => {
+    if (UI.storage !== 'local' || e.key !== APP_KEY || !e.newValue || drag || paint || UI.modal) return;
+    try {
+      S = normalize(JSON.parse(e.newValue));
+      if (!S.hyps.some(h => h.id === UI.activeHyp)) UI.activeHyp = S.hyps[0] ? S.hyps[0].id : null;
+      UI.undo = []; UI.sel = null; render();
+      toast('Dati aggiornati da un\'altra scheda aperta con questa app.');
+    } catch (err) { /* ignora dati illeggibili */ }
+  });
+}
+
+/* ---------- avvio ---------- */
+async function init() {
+  bindEvents();
+  renderStatus();
+  let raw = null;
+  try { raw = await Store.load(); } catch (e) { raw = null; }
+  S = normalize(raw);
+  UI.activeHyp = S.hyps[0] ? S.hyps[0].id : null;
+  UI.tab = 'posti';
+  UI.loaded = true;
+  render();
+}
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
+</script>
+</body>
+</html>
